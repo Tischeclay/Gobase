@@ -19,18 +19,29 @@ import (
 //	fmt.Println("main goroutine exit")
 //}
 
-func main() {
-	go func() {
-		defer fmt.Println("A.defer")
+//func main() {
+//	go func() {
+//		defer fmt.Println("A.defer")
+//
+//		func() {
+//			defer fmt.Println("B.defer")
+//			// 退出当前goroutine
+//			// runtime.Goexit()
+//			fmt.Println("B")
+//		}()
+//		fmt.Println("A")
+//	}()
+//
+//	for {
+//		time.Sleep(1 * time.Second)
+//	}
+//}
 
-		func() {
-			defer fmt.Println("B.defer")
-			// 退出当前goroutine
-			// runtime.Goexit()
-			fmt.Println("B")
-		}()
-		fmt.Println("A")
-	}()
+func main() {
+	go func(a int, b int) bool {
+		fmt.Println("a = ", a, "b = ", b)
+		return true
+	}(10, 20)
 
 	for {
 		time.Sleep(1 * time.Second)
