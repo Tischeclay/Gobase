@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/aceld/zinx v1.2.7
+	github.com/alexmullins/zip v0.0.0-20180717182244-4affb64b04d0
 	golang.org/x/net v0.48.0
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.11
