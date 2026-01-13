@@ -70,13 +70,24 @@ init函数：在一个代码包、一个源文件中可以声明若干名为init
 //}
 
 // 完整引入声明语句形式引入名importname可以是一个句点（.）这样的引用成为句点引入
+//package main
+//
+//import (
+//	. "fmt"
+//	. "time"
+//)
+//
+//func main() {
+//	Println("Current time", Now())
+//}
+
 package main
 
 import (
-	. "fmt"
-	. "time"
+	format "fmt"  // okay: 下面被使用了一次
+	_ "math/rand" // okay: 匿名引入
 )
 
 func main() {
-	Println("Current time", Now())
+	format.Println() // 使用"fmt"包
 }
