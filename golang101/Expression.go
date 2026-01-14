@@ -40,3 +40,10 @@
 //// 下面这些即可以被视为简单语句，也可以被视为表达式。
 //f() // 函数调用
 //<-c // 通道接收操作
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Expression")
+}
