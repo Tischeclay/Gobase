@@ -20,8 +20,9 @@ func main() {
 	var s []int
 	var m map[string]int
 
-	fmt.Println(a == a)   // true
-	fmt.Println(m == nil) // true
-	fmt.Println(s == nil) // true
+	fmt.Println(a == a)                  // true
+	fmt.Println(m == nil)                // true
+	fmt.Println(s == nil)                // true
 	fmt.Println(nil == map[string]int{}) // false
 	fmt.Println(nil == []int{})          // false
+}
