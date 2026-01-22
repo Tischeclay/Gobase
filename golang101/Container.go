@@ -87,18 +87,43 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 大多数数组类型都是可比较类型，除了元素类型为不可比较类型的数组类型。当比较两个数组值时，它们的对应元素将按照逐一被比较（可以认为按照下标顺序比较）。
 这两个数组只有在它们的对应元素都相等的情况下才相等；当一对元素被发现不相等的或者在比较中产生恐慌的时候，对数组的比较将提前结束。
 */
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var a [16]byte
+//	var s []int
+//	var m map[string]int
+//
+//	fmt.Println(a == a)                  // true
+//	fmt.Println(m == nil)                // true
+//	fmt.Println(s == nil)                // true
+//	fmt.Println(nil == map[string]int{}) // false
+//	fmt.Println(nil == []int{})          // false
+//}
+
+/*
+除了上面已提到的容器长度属性（此容器中含有有多少个元素），每个容器值还有一个容量属性。 一个数组值的容量总是和它的长度相等；
+一个非零映射值的容量可以被认为是无限大的。切片值的容量的含义将在后续章节介绍。 一个切片值的容量总是不小于此切片值的长度。
+在编程中，只有切片值的容量有实际意义。
+我们可以调用内置函数len来获取一个容器值的长度，或者调用内置函数cap来获取一个容器值的容量。
+这两个函数都返回一个int类型确定结果值或者一个默认类型为int的类型不确定结果，具体取决于传递给它们的实参是否为常量表达式。
+因为非零映射值的容量是无限大，所以cap并不适用于映射值。
+*/
 package main
 
 import "fmt"
 
 func main() {
-	var a [16]byte
+	var a [5]int
+	fmt.Println(len(a), cap(a)) // 5 5
 	var s []int
-	var m map[string]int
-
-	fmt.Println(a == a)                  // true
-	fmt.Println(m == nil)                // true
-	fmt.Println(s == nil)                // true
-	fmt.Println(nil == map[string]int{}) // false
-	fmt.Println(nil == []int{})          // false
+	fmt.Println(len(s), cap(s)) // 0 0
+	s, s2 := []int{2, 3, 5}, []bool{}
+	fmt.Println(len(s), cap(s), len(s2), cap(s2)) // 3 3 0 0
+	var m map[int]bool
+	fmt.Println(len(m)) // 0
+	m, m2 := map[int]bool{1: true, 0: false}, map[int]int{}
+	fmt.Println(len(m), len(m2)) // 2 0
 }
