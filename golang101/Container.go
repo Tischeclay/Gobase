@@ -111,19 +111,124 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 这两个函数都返回一个int类型确定结果值或者一个默认类型为int的类型不确定结果，具体取决于传递给它们的实参是否为常量表达式。
 因为非零映射值的容量是无限大，所以cap并不适用于映射值。
 */
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var a [5]int
+//	fmt.Println(len(a), cap(a)) // 5 5
+//	var s []int
+//	fmt.Println(len(s), cap(s)) // 0 0
+//	s, s2 := []int{2, 3, 5}, []bool{}
+//	fmt.Println(len(s), cap(s), len(s2), cap(s2)) // 3 3 0 0
+//	var m map[int]bool
+//	fmt.Println(len(m)) // 0
+//	m, m2 := map[int]bool{1: true, 0: false}, map[int]int{}
+//	fmt.Println(len(m), len(m2)) // 2 0
+//}
+
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	a := []int{-1, 0, 1}
+//	s := []bool{true, false}
+//	m := map[string]int{"abc": 123, "xyz": 789}
+//	fmt.Println(a[2], s[1], m["abc"])
+//	a[2], s[1], m["abc"] = 999, true, 567
+//	fmt.Println(a[2], s[1], m["abc"])
+//
+//	n, present := m["hello"]
+//	fmt.Println(n, present, m["hello"])
+//	n, present = m["abc"]
+//	fmt.Println(n, present, m["abc"])
+//	//m["hello"] = 555
+//}
+
+// 当一个映射赋值语句执行完毕之后，目标映射值和源映射值将共享底层的元素。 向其中一个映射中添加（或从中删除）元素将体现在另一个映射中。
+// 和映射一样，当一个切片赋值给另一个切片后，它们将共享底层的元素。它们的长度和容量也相等。 但是和映射不同，如果以后其中一个切片改变了长度或者容量，此变化不会体现到另一个切片中。
+// 当一个数组被赋值给另一个数组，所有的元素都将被从源数组复制到目标数组。赋值完成之后，这两个数组不共享任何元素。
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	m0 := map[int]int{0: 7, 1: 8, 2: 9}
+//	m1 := m0
+//	m1[0] = 2
+//	fmt.Println(m0, m1) // map[0:2 1:8 2:9] map[0:2 1:8 2:9]
+//
+//	s0 := []int{7, 8, 9}
+//	s1 := s0
+//	s1[0] = 2
+//	fmt.Println(s0, s1) // [2 8 9] [2 8 9]
+//
+//	a0 := [...]int{7, 8, 9}
+//	a1 := a0
+//	a1[0] = 2
+//	fmt.Println(a0, a1) // [7 8 9] [2 8 9]
+//}
+
+// 向一个映射添加和从一个映射删除条目
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	m := map[string]int{"Go": 2007}
+//	m["C"] = 1972
+//	m["Java"] = 1995
+//	fmt.Println(m)
+//	m["Go"] = 2009
+//	delete(m, "Java")
+//	fmt.Println(m)
+//}
+
+// 注意，在Go 1.12之前，映射打印结果中的条目顺序并不固定，两次打印结果可能并不相同。
+// 一个数组中的元素个数总是恒定的，我们无法向其中添加元素，也无法从其中删除元素。但是可寻址的数组值中的元素是可以被修改的。
+// 我们可以通过调用内置append函数，以一个切片为基础，来添加不定数量的元素并返回一个新的切片。
+// 此新的结果切片包含着基础切片中所有的元素和所有被添加的元素。 注意，基础切片并未被此append函数调用所修改。
+// 当然，如果我们愿意（事实上在实践中常常如此），我们可以将结果切片赋值给基础切片以修改基础切片。
+// Go中并未提供一个内置方式来从一个切片中删除一个元素,使用append函数和后面将要介绍的子切片语法一起来实现元素删除操作。
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	s0 := []int{2, 3, 5}
+//	fmt.Println(s0, cap(s0)) // [2 3 5] 3
+//	// 内置append函数是一个变长参数函数（下下篇文章中介绍）。 它有两个参数，其中第二个参数（形参）为一个变长参数。
+//	s1 := append(s0, 7)      // 添加一个元素
+//	fmt.Println(s1, cap(s1)) // [2 3 5 7] 6
+//	s2 := append(s1, 11, 13) // 添加两个元素
+//	fmt.Println(s2, cap(s2)) // [2 3 5 7 11 13] 6
+//	s3 := append(s0)         // <=> s3 := s0
+//	fmt.Println(s3, cap(s3)) // [2 3 5] 3
+//	s4 := append(s0, s0...)  // 以s0为基础添加s0中所有的元素
+//	fmt.Println(s4, cap(s4)) // [2 3 5 2 3 5] 6
+//
+//	s0[0], s1[0] = 99, 789
+//	fmt.Println(s2[0], s3[0], s4[0]) // 789 99 2
+//}
+
+// 请注意，当一个append函数调用需要为结果切片开辟内存时，结果切片的容量取决于具体编译器实现。
+// 在这种情况下，对于官方标准编译器，如果基础切片的容量较小，则结果切片的容量至少为基础切片的两倍。
+// 这样做的目的是使结果切片有足够多的冗余元素槽位，以防止此结果切片被用做后续其它append函数调用的基础切片时再次开辟内存。
+// 上面提到了，在实际编程中，我们常常将append函数调用的结果赋值给基础切片。
 package main
 
 import "fmt"
 
 func main() {
-	var a [5]int
-	fmt.Println(len(a), cap(a)) // 5 5
-	var s []int
-	fmt.Println(len(s), cap(s)) // 0 0
-	s, s2 := []int{2, 3, 5}, []bool{}
-	fmt.Println(len(s), cap(s), len(s2), cap(s2)) // 3 3 0 0
-	var m map[int]bool
-	fmt.Println(len(m)) // 0
-	m, m2 := map[int]bool{1: true, 0: false}, map[int]int{}
-	fmt.Println(len(m), len(m2)) // 2 0
+	var s = append([]string(nil), "array", "slice")
+	fmt.Println(s)      // [array slice]
+	fmt.Println(cap(s)) // 2
+	s = append(s, "map")
+	fmt.Println(s)      // [array slice map]
+	fmt.Println(cap(s)) // 4
+	s = append(s, "channel")
+	fmt.Println(s)      // [array slice map channel]
+	fmt.Println(cap(s)) // 4
 }
