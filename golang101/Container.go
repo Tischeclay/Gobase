@@ -217,18 +217,41 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 // 在这种情况下，对于官方标准编译器，如果基础切片的容量较小，则结果切片的容量至少为基础切片的两倍。
 // 这样做的目的是使结果切片有足够多的冗余元素槽位，以防止此结果切片被用做后续其它append函数调用的基础切片时再次开辟内存。
 // 上面提到了，在实际编程中，我们常常将append函数调用的结果赋值给基础切片。
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var s = append([]string(nil), "array", "slice")
+//	fmt.Println(s)      // [array slice]
+//	fmt.Println(cap(s)) // 2
+//	s = append(s, "map")
+//	fmt.Println(s)      // [array slice map]
+//	fmt.Println(cap(s)) // 4
+//	s = append(s, "channel")
+//	fmt.Println(s)      // [array slice map channel]
+//	fmt.Println(cap(s)) // 4
+//}
+
+// 第一个函数调用创建了一个长度为length并且容量为capacity的切片。 第二个函数调用创建了一个长度为length并且容量也为length的切片。
+// 使用make函数创建的切片中的所有元素值均被初始化为（结果切片的元素类型的）零值。
+// 下面是一个展示了如何使用make函数来创建映射和切片的例子：
 package main
 
 import "fmt"
 
 func main() {
-	var s = append([]string(nil), "array", "slice")
-	fmt.Println(s)      // [array slice]
-	fmt.Println(cap(s)) // 2
-	s = append(s, "map")
-	fmt.Println(s)      // [array slice map]
-	fmt.Println(cap(s)) // 4
-	s = append(s, "channel")
-	fmt.Println(s)      // [array slice map channel]
-	fmt.Println(cap(s)) // 4
+	// 创建映射。
+	fmt.Println(make(map[string]int)) // map[]
+	m := make(map[string]int, 3)
+	fmt.Println(m, len(m)) // map[] 0
+	m["C"] = 1972
+	m["Go"] = 2009
+	fmt.Println(m, len(m)) // map[C:1972 Go:2009] 2
+
+	// 创建切片。
+	s := make([]int, 3, 5)
+	fmt.Println(s, len(s), cap(s)) // [0 0 0] 3 5
+	s = make([]int, 2)
+	fmt.Println(s, len(s), cap(s)) // [0 0] 2 2
 }
