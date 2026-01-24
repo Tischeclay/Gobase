@@ -282,17 +282,357 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 一个切片值的任何元素都是可寻址的，即使此切片本身是不可寻址的。 这是因为一个切片的底层元素总是存储在一个被开辟出来的内存片段（间接值部）上。
 任何映射元素都是不可寻址的。
 */
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	a := [5]int{2, 3, 5, 7}
+//	s := make([]bool, 2)
+//	pa2, ps1 := &a[2], &s[1]
+//	fmt.Println(*pa2, *ps1)
+//	a[2], s[1] = 99, true
+//	fmt.Println(*pa2, *ps1)
+//	ps0 := &[]string{"Go", "C"}[0]
+//	fmt.Println(*ps0)
+//}
+
+/*
+如果一个映射类型的元素类型是一个结构体类型，则我们无法修改此映射类型的值中的每个结构体元素
+的单个字段，我们必须整体地同时修改所有结构体字段
+如果一个映射类型的元素类型为一个数组类型，则我们无法修改此映射类型值中的每个数组元素的单个元素
+*/
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	type T struct{ age int }
+//	mt := map[string]T{}
+//	mt["John"] = T{age: 29} // 整体修改，允许
+//	ma := map[int][5]int{}
+//	ma[1] = [5]int{1: 789} // 整体修改，允许
+//
+//	// 欲修改的映射元素必须先存放在一个临时变量中，然后修改这个临时变量，最后再用这个临时变量整体覆盖欲修改的映射元素
+//	t := mt["John"]
+//	t.age = 30
+//	mt["John"] = t
+//
+//	a := ma[1]
+//	a[1] = 123
+//	ma[1] = a
+//
+//	fmt.Println(ma[1][1]) // 读取映射元素的元素或者字段是允许的
+//	fmt.Println(mt["John"].age)
+//}
+
+//子切片操作有可能会造成暂时性的内存泄露
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	a := [...]int{0, 1, 2, 3, 4, 5, 6}
+//	s0 := a[:]     // <=> s0 := a[0:7:7]
+//	s1 := s0[:]    // <=> s1 := s0
+//	s2 := s1[1:3]  // <=> s2 := a[1:3]
+//	s3 := s1[3:]   // <=> s3 := s1[3:7]
+//	s4 := s0[3:5]  // <=> s4 := s0[3:5:7]
+//	s5 := s4[:2:2] // <=> s5 := s0[3:5:5]
+//	s6 := append(s4, 77)
+//	s7 := append(s5, 88)
+//	s8 := append(s7, 66)
+//	s3[1] = 99
+//	fmt.Println(len(s2), cap(s2), s2) // 2 6 [1 2]
+//	fmt.Println(len(s3), cap(s3), s3) // 4 4 [3 99 77 6]
+//	fmt.Println(len(s4), cap(s4), s4) // 2 4 [3 99]
+//	fmt.Println(len(s5), cap(s5), s5) // 2 2 [3 99]
+//	fmt.Println(len(s6), cap(s6), s6) // 3 4 [3 99 77]
+//	fmt.Println(len(s7), cap(s7), s7) // 3 4 [3 4 88]
+//	fmt.Println(len(s8), cap(s8), s8) // 4 4 [3 4 88 66]
+//}
+
+/*
+从Go 1.17开始，一个切片可以被转化为一个相同元素类型的数组的指针类型。
+但是如果数组的长度大于被转化切片的长度，则将导致恐慌产生。 转换结果和被转化切片将共享底层元素。
+*/
+
+//package main
+//
+//type S []int
+//type A [2]int
+//type P *A
+//
+//func main() {
+//	var x []int
+//	var y = make([]int, 0)
+//	var x0 = (*[0]int)(x) // okay, x0 == nil
+//	var y0 = (*[0]int)(y) // okay, y0 != nil
+//	_, _ = x0, y0
+//
+//	var z = make([]int, 3, 5)
+//	var _ = (*[3]int)(z) // okay
+//	var _ = (*[2]int)(z) // okay
+//	var _ = (*A)(z)      // okay
+//	var _ = P(z)         // okay
+//
+//	var w = S(z)
+//	var _ = (*[3]int)(w) // okay
+//	var _ = (*[2]int)(w) // okay
+//	var _ = (*A)(w)      // okay
+//	var _ = P(w)         // okay
+//
+//	var _ = (*[4]int)(z) // 会产生恐慌
+//}
+
+/*
+从Go 1.20开始，一个切片可以被转化为一个相同元素类型的数组。 但是如果数组的长度大于被转化切片的长度，则将导致恐慌产生。
+转换过程中将复制所需的元素，因此结果数组和被转化切片不共享底层元素。
+*/
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var s = []int{0, 1, 2, 3}
+//	var a = [3]int(s[1:])
+//	s[2] = 9
+//	fmt.Println(s) // [0 1 9 3]
+//	fmt.Println(a) // [1 2 3]
+//
+//	//_ = [3]int(s[:2]) // panic
+//}
+
+/*
+我们可以使用内置copy函数来将一个切片中的元素复制到另一个切片。 这两个切片的类型可以不同，但是它们的元素类型必须相同。 换句话说，这两个切片的类型的底层类型必须相同。 copy函数的第一个参数为目标切片，第二个参数为源切片。 传递给一个copy函数调用的两个实参可以共享一些底层元素。
+copy函数返回复制了多少个元素，此值（int类型）为这两个切片的长度的较小值。
+*/
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	type Ta []int
+//	type Tb []int
+//	dest := Ta{1, 2, 3}
+//	src := Tb{5, 6, 7, 8, 9}
+//	n := copy(dest, src)
+//	fmt.Println(n, dest) // 3 [5 6 7]
+//	n = copy(dest[1:], dest)
+//	fmt.Println(n, dest) // 2 [5 5 6]
+//
+//	a := [4]int{} // 一个数组
+//	n = copy(a[:], src)
+//	fmt.Println(n, a) // 4 [5 6 7 8]
+//	n = copy(a[:], a[2:])
+//	fmt.Println(n, a) // 2 [7 8 7 8]
+//}
+
+/*
+在此语法形式中，for和range为两个关键字，key和element称为循环变量。 如果aContainer是一个切片或者数组（或者数组指针，见后），则key的类型必须为内置类型int。
+上面所示的for-range语法形式中的等号=也可以是一个变量短声明符号:=。 当短声明符号被使用的时候，key和element总是两个新声明的变量，这时如果aContainer是一个切片或者数组（或者数组指针），则key的类型被推断为内置类型int。
+和传统的for循环流程控制一样，每个for-range循环流程控制形成了两个代码块，其中一个是隐式的，另一个是显式的（花括号之间的部分）。 此显式的代码块内嵌在隐式的代码块之中。
+和for循环流程控制一样，break和continue也可以使用在一个for-range循环流程控制中的显式代码块中。
+*/
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	m := map[string]int{"C": 1972, "C++": 1983, "Go": 2009}
+//	for lang, year := range m {
+//		fmt.Printf("%v: %v \n", lang, year)
+//	}
+//
+//	a := [...]int{2, 3, 5, 7, 11}
+//	for i, prime := range a {
+//		fmt.Printf("%v: %v \n", i, prime)
+//	}
+//
+//	s := []string{"go", "defer", "goto", "var"}
+//	for i, keyword := range s {
+//		fmt.Printf("%v: %v \n", i, keyword)
+//	}
+//}
+
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	type Person struct {
+//		name string
+//		age  int
+//	}
+//	persons := [2]Person{{"Alice", 28}, {"Bob", 25}}
+//	for i, p := range persons {
+//		fmt.Println(i, p)
+//		// 此修改将不会体现在这个遍历过程中，
+//		// 因为被遍历的数组是persons的一个副本。
+//		persons[1].name = "Jack"
+//
+//		// 此修改不会反映到persons数组中，因为p
+//		// 是persons数组的副本中的一个元素的副本。
+//		p.age = 31
+//	}
+//	fmt.Println("persons:", &persons)
+//}
+
+/*
+复制一个切片或者映射的代价很小，但是复制一个大尺寸的数组的代价比较大。
+所以，一般来说，range关键字后跟随一个大尺寸数组不是一个好主意。 如果我们要遍历一个大尺寸数组中的元素，我们以遍历从此数组派生出来的一个切片，或者遍历一个指向此数组的指针
+*/
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	m := map[int]struct{ dynamic, strong bool }{
+//		0: {true, false},
+//		1: {false, true},
+//		2: {false, false},
+//	}
+//
+//	for _, v := range m {
+//		// This following line has no effects on the map m.
+//		v.dynamic, v.strong = true, true
+//	}
+//
+//	fmt.Println(m[0]) // {true false}
+//	fmt.Println(m[1]) // {false true}
+//	fmt.Println(m[2]) // {false false}
+//}
+
+// 对于某些情形，我们可以把数组指针当做数组来使用。
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var a [100]int
+//
+//	for i, n := range &a { // 复制一个指针的开销很小
+//		fmt.Println(i, n)
+//	}
+//
+//	for i, n := range a[:] { // 复制一个切片的开销很小
+//		fmt.Println(i, n)
+//	}
+//}
+//
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	var p *[5]int // nil
+//
+//	for i, _ := range p { // okay
+//		fmt.Println(i)
+//	}
+//
+//	for i := range p { // okay
+//		fmt.Println(i)
+//	}
+//
+//	for i, n := range p { // panic
+//		fmt.Println(i, n)
+//	}
+//}
+
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	a := [5]int{2, 3, 5, 7, 11}
+//	p := &a
+//	p[0], p[1] = 17, 19
+//	fmt.Println(a) // [17 19 5 7 11]
+//	p = nil
+//	_ = p[0] // panic
+//}
+
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	pa := &[5]int{2, 3, 5, 7, 11}
+//	s := pa[1:3]
+//	fmt.Println(s) // [3 5]
+//	pa = nil
+//	s = pa[0:0] // panic
+//	// 如果下一行能被执行到，则它也会产生恐慌。
+//	_ = (*[0]byte)(nil)[:]
+//}
+
+// Go 1.21引入了一个clear内置函数。 此函数可以用来清空映射条目或者重置切片元素。
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	s := []int{1, 2, 3}
+//	clear(s)
+//	fmt.Println(s) // [0 0 0]
+//
+//	a := [4]int{5, 6, 7, 8}
+//	clear(a[1:3])
+//	fmt.Println(a) // [5 0 0 8]
+//
+//	m := map[float64]float64{}
+//	x := 0.0
+//	m[x] = x
+//	x /= x // x变成了NaN
+//	m[x] = x
+//	fmt.Println(len(m)) // 2
+//	for k := range m {
+//		delete(m, k)
+//	}
+//	fmt.Println(len(m)) // 1
+//	clear(m)
+//	fmt.Println(len(m)) // 0
+//}
+
+/*
+内置函数len和cap的调用可能会在编译时刻被估值
+如果传递给内置函数len或者cap的一个调用的实参是一个数组或者数组指针，则此调用将在编译时刻被估值。
+此估值结果是一个类型为内置类型int的类型确定常量值。
+*/
+
+// package main
+//
+// import "fmt"
+//
+// var a [5]int
+// var p *[7]string
+//
+// // N和M都是类型为int的类型确定值。
+// const N = len(a)
+// const M = cap(p)
+//
+//	func main() {
+//		fmt.Println(N) // 5
+//		fmt.Println(M) // 7
+//	}
+//
+// 上面已经提到了，一般来说，一个切片的长度和容量不能被单独修改。一个切片只有通过赋值的方式被整体修改。
+// 我们可以通过反射的途径来单独修改一个切片的长度或者容量。
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func main() {
-	a := [5]int{2, 3, 5, 7}
-	s := make([]bool, 2)
-	pa2, ps1 := &a[2], &s[1]
-	fmt.Println(*pa2, *ps1)
-	a[2], s[1] = 99, true
-	fmt.Println(*pa2, *ps1)
-	ps0 := &[]string{"Go", "C"}[0]
-	fmt.Println(*ps0)
+	s := make([]int, 2, 6)
+	fmt.Println(len(s), cap(s)) // 2 6
+
+	reflect.ValueOf(&s).Elem().SetLen(3)
+	fmt.Println(len(s), cap(s)) // 3 6
+
+	reflect.ValueOf(&s).Elem().SetCap(5)
+	fmt.Println(len(s), cap(s)) // 3 5
 }
