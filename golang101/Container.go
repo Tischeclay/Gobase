@@ -264,15 +264,35 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 
 */
 // 使用new函数创建容器值
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	m := *new(map[string]int)
+//	fmt.Println(m == nil)
+//	s := *new([]int)
+//	fmt.Println(s == nil)
+//	a := *new([5]bool)
+//	fmt.Println(a == [5]bool{})
+//}
+
+/*
+如果一个数组是可寻址的，则它的元素也是可寻址的；反之亦然，即如果一个数组是不可寻址的，则它的元素也是不可寻址的。 原因很简单，因为一个数组只含有一个（直接）值部，并且它的所有元素和此直接值部均承载在同一个内存块上。
+一个切片值的任何元素都是可寻址的，即使此切片本身是不可寻址的。 这是因为一个切片的底层元素总是存储在一个被开辟出来的内存片段（间接值部）上。
+任何映射元素都是不可寻址的。
+*/
 package main
 
 import "fmt"
 
 func main() {
-	m := *new(map[string]int)
-	fmt.Println(m == nil)
-	s := *new([]int)
-	fmt.Println(s == nil)
-	a := *new([5]bool)
-	fmt.Println(a == [5]bool{})
+	a := [5]int{2, 3, 5, 7}
+	s := make([]bool, 2)
+	pa2, ps1 := &a[2], &s[1]
+	fmt.Println(*pa2, *ps1)
+	a[2], s[1] = 99, true
+	fmt.Println(*pa2, *ps1)
+	ps0 := &[]string{"Go", "C"}[0]
+	fmt.Println(*ps0)
 }
