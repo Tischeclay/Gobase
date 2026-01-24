@@ -236,22 +236,43 @@ N必须为一个非负整数常量。它指定了一个数组类型的长度，�
 // 第一个函数调用创建了一个长度为length并且容量为capacity的切片。 第二个函数调用创建了一个长度为length并且容量也为length的切片。
 // 使用make函数创建的切片中的所有元素值均被初始化为（结果切片的元素类型的）零值。
 // 下面是一个展示了如何使用make函数来创建映射和切片的例子：
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	// 创建映射。
+//	fmt.Println(make(map[string]int)) // map[]
+//	m := make(map[string]int, 3)
+//	fmt.Println(m, len(m)) // map[] 0
+//	m["C"] = 1972
+//	m["Go"] = 2009
+//	fmt.Println(m, len(m)) // map[C:1972 Go:2009] 2
+//
+//	// 创建切片。
+//	s := make([]int, 3, 5)
+//	fmt.Println(s, len(s), cap(s)) // [0 0 0] 3 5
+//	s = make([]int, 2)
+//	fmt.Println(s, len(s), cap(s)) // [0 0] 2 2
+//}
+
+// 注意映射和切片可以使用内置make函数来创建映射和切片
+
+/*
+在前面的指针一文中，我们已经了解到内置new函数可以用来为一个任何类型的值开辟内存并返回一个存储有此值的地址的指针。 用new函数开辟出来的值均为零值。因为这个原因，new函数对于创建映射和切片值来说没有任何价值。
+使用new函数来用来创建数组值并非是完全没有意义的，但是在实践中很少这么做，因为使用组合字面量来创建数组值更为方便。
+
+*/
+// 使用new函数创建容器值
 package main
 
 import "fmt"
 
 func main() {
-	// 创建映射。
-	fmt.Println(make(map[string]int)) // map[]
-	m := make(map[string]int, 3)
-	fmt.Println(m, len(m)) // map[] 0
-	m["C"] = 1972
-	m["Go"] = 2009
-	fmt.Println(m, len(m)) // map[C:1972 Go:2009] 2
-
-	// 创建切片。
-	s := make([]int, 3, 5)
-	fmt.Println(s, len(s), cap(s)) // [0 0 0] 3 5
-	s = make([]int, 2)
-	fmt.Println(s, len(s), cap(s)) // [0 0] 2 2
+	m := *new(map[string]int)
+	fmt.Println(m == nil)
+	s := *new([]int)
+	fmt.Println(s == nil)
+	a := *new([5]bool)
+	fmt.Println(a == [5]bool{})
 }
