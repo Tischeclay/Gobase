@@ -24,27 +24,52 @@
 //	fmt.Println("bye")
 //}
 
+//package main
+//
+//import "fmt"
+//
+//func main() {
+//	c := make(chan int, 2) // 一个容量为2的缓冲通道
+//	c <- 3
+//	c <- 5
+//	close(c)
+//	fmt.Println(len(c), cap(c)) // 2 2
+//	x, ok := <-c
+//	fmt.Println(x, ok)          // 3 true
+//	fmt.Println(len(c), cap(c)) // 1 2
+//	x, ok = <-c
+//	fmt.Println(x, ok)          // 5 true
+//	fmt.Println(len(c), cap(c)) // 0 2
+//	x, ok = <-c
+//	fmt.Println(x, ok) // 0 false
+//	x, ok = <-c
+//	fmt.Println(x, ok)          // 0 false
+//	fmt.Println(len(c), cap(c)) // 0 2
+//	close(c)                    // 此行将产生一个恐慌
+//	c <- 7                      // 如果上一行不存在，此行也将产生一个恐慌。
+//}
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	c := make(chan int, 2) // 一个容量为2的缓冲通道
-	c <- 3
-	c <- 5
-	close(c)
-	fmt.Println(len(c), cap(c)) // 2 2
-	x, ok := <-c
-	fmt.Println(x, ok)          // 3 true
-	fmt.Println(len(c), cap(c)) // 1 2
-	x, ok = <-c
-	fmt.Println(x, ok)          // 5 true
-	fmt.Println(len(c), cap(c)) // 0 2
-	x, ok = <-c
-	fmt.Println(x, ok) // 0 false
-	x, ok = <-c
-	fmt.Println(x, ok)          // 0 false
-	fmt.Println(len(c), cap(c)) // 0 2
-	close(c)                    // 此行将产生一个恐慌
-	c <- 7                      // 如果上一行不存在，此行也将产生一个恐慌。
+	var ball = make(chan string)
+	kickBall := func(playerName string) {
+		for {
+			fmt.Print(<-ball, "传球", "\n")
+			time.Sleep(time.Second)
+			ball <- playerName
+		}
+	}
+	go kickBall("张三")
+	go kickBall("李四")
+	go kickBall("王二麻子")
+	go kickBall("刘大")
+	ball <- "裁判"    // 开球
+	var c chan bool // 一个零值nil通道
+	<-c             // 永久阻塞在此
 }
