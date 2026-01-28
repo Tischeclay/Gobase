@@ -74,28 +74,44 @@
 //	<-c             // 永久阻塞在此
 //}
 
+//package main
+//
+//import (
+//	"fmt"
+//	"time"
+//)
+//
+//func main() {
+//	fibonacci := func() chan uint64 {
+//		c := make(chan uint64)
+//		go func() {
+//			var x, y uint64 = 0, 1
+//			for ; y < (1 << 63); c <- y {
+//				x, y = y, x+y
+//			}
+//			close(c)
+//		}()
+//		return c
+//	}
+//	c := fibonacci()
+//	for x, ok := <-c; ok; x, ok = <-c {
+//		time.Sleep(time.Second)
+//		fmt.Println(x)
+//	}
+//}
+
+// 一个不含任何分支的select-case代码块select{}将使当前协程处于永久阻塞状态。
+// 在下面这个例子中，default分支将铁定得到执行，因为两个case分支后的操作均为阻塞的。
 package main
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
 func main() {
-	fibonacci := func() chan uint64 {
-		c := make(chan uint64)
-		go func() {
-			var x, y uint64 = 0, 1
-			for ; y < (1 << 63); c <- y {
-				x, y = y, x+y
-			}
-			close(c)
-		}()
-		return c
-	}
-	c := fibonacci()
-	for x, ok := <-c; ok; x, ok = <-c {
-		time.Sleep(time.Second)
-		fmt.Println(x)
+	var c chan struct{}
+	select {
+	case <-c:
+	case c <- struct{}{}:
+	default:
+		fmt.Println("Go here.")
 	}
 }
