@@ -49,6 +49,31 @@
 //	c <- 7                      // 如果上一行不存在，此行也将产生一个恐慌。
 //}
 
+//package main
+//
+//import (
+//	"fmt"
+//	"time"
+//)
+//
+//func main() {
+//	var ball = make(chan string)
+//	kickBall := func(playerName string) {
+//		for {
+//			fmt.Print(<-ball, "传球", "\n")
+//			time.Sleep(time.Second)
+//			ball <- playerName
+//		}
+//	}
+//	go kickBall("张三")
+//	go kickBall("李四")
+//	go kickBall("王二麻子")
+//	go kickBall("刘大")
+//	ball <- "裁判"    // 开球
+//	var c chan bool // 一个零值nil通道
+//	<-c             // 永久阻塞在此
+//}
+
 package main
 
 import (
@@ -57,19 +82,20 @@ import (
 )
 
 func main() {
-	var ball = make(chan string)
-	kickBall := func(playerName string) {
-		for {
-			fmt.Print(<-ball, "传球", "\n")
-			time.Sleep(time.Second)
-			ball <- playerName
-		}
+	fibonacci := func() chan uint64 {
+		c := make(chan uint64)
+		go func() {
+			var x, y uint64 = 0, 1
+			for ; y < (1 << 63); c <- y {
+				x, y = y, x+y
+			}
+			close(c)
+		}()
+		return c
 	}
-	go kickBall("张三")
-	go kickBall("李四")
-	go kickBall("王二麻子")
-	go kickBall("刘大")
-	ball <- "裁判"    // 开球
-	var c chan bool // 一个零值nil通道
-	<-c             // 永久阻塞在此
+	c := fibonacci()
+	for x, ok := <-c; ok; x, ok = <-c {
+		time.Sleep(time.Second)
+		fmt.Println(x)
+	}
 }
