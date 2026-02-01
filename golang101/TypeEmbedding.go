@@ -22,9 +22,43 @@
 //}
 
 // 通过类型内嵌来扩展类型功能的例子
+//package main
+//
+//import "fmt"
+//
+//type Person struct {
+//	Name string
+//	Age  int
+//}
+//
+//func (p Person) PrintName() {
+//	fmt.Println("Name", p.Name)
+//}
+//
+//func (p *Person) SetAge(age int) {
+//	p.Age = age
+//}
+//
+//type Singer struct {
+//	Person
+//	works []string
+//}
+//
+//func main() {
+//	var gaga = Singer{Person: Person{"Gaga", 30}}
+//	gaga.PrintName()
+//	gaga.Name = "Polina Gagarina"
+//	(&gaga).SetAge(31)
+//	(&gaga).PrintName()
+//	fmt.Println(gaga.Age)
+//}
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 type Person struct {
 	Name string
@@ -45,10 +79,9 @@ type Singer struct {
 }
 
 func main() {
-	var gaga = Singer{Person: Person{"Gaga", 30}}
-	gaga.PrintName()
-	gaga.Name = "Polina Gagarina"
-	(&gaga).SetAge(31)
-	(&gaga).PrintName()
-	fmt.Println(gaga.Age)
+	t := reflect.TypeOf(Singer{})
+	fmt.Println(t, "has", t.NumField(), "fields:")
+	for i := 0; i < t.NumField(); i++ {
+		fmt.Println(" field#", i, ":", t.Field(i).Name, "\n")
+	}
 }
