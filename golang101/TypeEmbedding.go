@@ -84,4 +84,13 @@ func main() {
 	for i := 0; i < t.NumField(); i++ {
 		fmt.Println(" field#", i, ":", t.Field(i).Name, "\n")
 	}
+	fmt.Println(t, "has", t.NumMethod(), "methods:")
+	for i := 0; i < t.NumMethod(); i++ {
+		fmt.Print("method#", i, ": ", t.Method(i).Name, "\n")
+	}
+	pt := reflect.TypeOf(&Singer{})
+	fmt.Println(pt, "has", pt.NumMethod(), "methods:")
+	for i := 0; i < pt.NumMethod(); i++ {
+		fmt.Print("method#", i, ": ", pt.Method(i).Name, "\n")
+	}
 }
