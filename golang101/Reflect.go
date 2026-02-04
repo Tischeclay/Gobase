@@ -56,48 +56,73 @@
 //	fmt.Println(ti.Implements(ti))  // true
 //}
 
+//package main
+//
+//import "fmt"
+//import "reflect"
+//
+//type F func(string, int) bool
+//
+//func (f F) m(s string) bool {
+//	return f(s, 32)
+//}
+//func (f F) M() {}
+//
+//type I interface {
+//	m(s string) bool
+//	M()
+//}
+//
+//func main() {
+//	var x struct {
+//		F F
+//		i I
+//	}
+//	tx := reflect.TypeOf(x)
+//	fmt.Println(tx.Kind())        // struct
+//	fmt.Println(tx.NumField())    // 2
+//	fmt.Println(tx.Field(1).Name) // i
+//	// 包路径（PkgPath）是非导出字段（或者方法）的内在属性。
+//	fmt.Println(tx.Field(0).PkgPath) //
+//	fmt.Println(tx.Field(1).PkgPath) // main
+//
+//	tf, ti := tx.Field(0).Type, tx.Field(1).Type
+//	fmt.Println(tf.Kind())               // func
+//	fmt.Println(tf.IsVariadic())         // false
+//	fmt.Println(tf.NumIn(), tf.NumOut()) // 2 1
+//	t0, t1, t2 := tf.In(0), tf.In(1), tf.Out(0)
+//	// 下一行打印出：string int bool
+//	fmt.Println(t0.Kind(), t1.Kind(), t2.Kind())
+//
+//	fmt.Println(tf.NumMethod(), ti.NumMethod()) // 1 2
+//	fmt.Println(tf.Method(0).Name)              // M
+//	fmt.Println(ti.Method(1).Name)              // m
+//	_, ok1 := tf.MethodByName("m")
+//	_, ok2 := ti.MethodByName("m")
+//	fmt.Println(ok1, ok2) // false true
+//}
+
 package main
 
 import "fmt"
 import "reflect"
 
-type F func(string, int) bool
-
-func (f F) m(s string) bool {
-	return f(s, 32)
-}
-func (f F) M() {}
-
-type I interface {
-	m(s string) bool
-	M()
+type T struct {
+	X    int  `max:"99" min:"0" default:"0"`
+	Y, Z bool `optional:"yes"`
 }
 
 func main() {
-	var x struct {
-		F F
-		i I
-	}
-	tx := reflect.TypeOf(x)
-	fmt.Println(tx.Kind())        // struct
-	fmt.Println(tx.NumField())    // 2
-	fmt.Println(tx.Field(1).Name) // i
-	// 包路径（PkgPath）是非导出字段（或者方法）的内在属性。
-	fmt.Println(tx.Field(0).PkgPath) //
-	fmt.Println(tx.Field(1).PkgPath) // main
-
-	tf, ti := tx.Field(0).Type, tx.Field(1).Type
-	fmt.Println(tf.Kind())               // func
-	fmt.Println(tf.IsVariadic())         // false
-	fmt.Println(tf.NumIn(), tf.NumOut()) // 2 1
-	t0, t1, t2 := tf.In(0), tf.In(1), tf.Out(0)
-	// 下一行打印出：string int bool
-	fmt.Println(t0.Kind(), t1.Kind(), t2.Kind())
-
-	fmt.Println(tf.NumMethod(), ti.NumMethod()) // 1 2
-	fmt.Println(tf.Method(0).Name)              // M
-	fmt.Println(ti.Method(1).Name)              // m
-	_, ok1 := tf.MethodByName("m")
-	_, ok2 := ti.MethodByName("m")
-	fmt.Println(ok1, ok2) // false true
+	t := reflect.TypeOf(T{})
+	x := t.Field(0).Tag
+	y := t.Field(1).Tag
+	z := t.Field(2).Tag
+	fmt.Println(reflect.TypeOf(x)) // reflect.StructTag
+	// v的类型为string
+	v, present := x.Lookup("max")
+	fmt.Println(len(v), present)      // 2 true
+	fmt.Println(x.Get("max"))         // 99
+	fmt.Println(x.Lookup("optional")) //  false
+	fmt.Println(y.Lookup("optional")) // yes true
+	fmt.Println(z.Lookup("optional")) // yes true
 }
