@@ -102,27 +102,53 @@
 //	fmt.Println(ok1, ok2) // false true
 //}
 
+//package main
+
+//import "fmt"
+//import "reflect"
+//
+//type T struct {
+//	X    int  `max:"99" min:"0" default:"0"`
+//	Y, Z bool `optional:"yes"`
+//}
+//
+//func main() {
+//	t := reflect.TypeOf(T{})
+//	x := t.Field(0).Tag
+//	y := t.Field(1).Tag
+//	z := t.Field(2).Tag
+//	fmt.Println(reflect.TypeOf(x)) // reflect.StructTag
+//	// v的类型为string
+//	v, present := x.Lookup("max")
+//	fmt.Println(len(v), present)      // 2 true
+//	fmt.Println(x.Get("max"))         // 99
+//	fmt.Println(x.Lookup("optional")) //  false
+//	fmt.Println(y.Lookup("optional")) // yes true
+//	fmt.Println(z.Lookup("optional")) // yes true
+//}
+
 package main
 
 import "fmt"
 import "reflect"
 
-type T struct {
-	X    int  `max:"99" min:"0" default:"0"`
-	Y, Z bool `optional:"yes"`
-}
-
 func main() {
-	t := reflect.TypeOf(T{})
-	x := t.Field(0).Tag
-	y := t.Field(1).Tag
-	z := t.Field(2).Tag
-	fmt.Println(reflect.TypeOf(x)) // reflect.StructTag
-	// v的类型为string
-	v, present := x.Lookup("max")
-	fmt.Println(len(v), present)      // 2 true
-	fmt.Println(x.Get("max"))         // 99
-	fmt.Println(x.Lookup("optional")) //  false
-	fmt.Println(y.Lookup("optional")) // yes true
-	fmt.Println(z.Lookup("optional")) // yes true
+	ta := reflect.ArrayOf(5, reflect.TypeOf(123))
+	fmt.Println(ta) // [5]int
+	tc := reflect.ChanOf(reflect.SendDir, ta)
+	fmt.Println(tc) // chan<- [5]int
+	tp := reflect.PtrTo(ta)
+	fmt.Println(tp) // *[5]int
+	ts := reflect.SliceOf(tp)
+	fmt.Println(ts) // []*[5]int
+	tm := reflect.MapOf(ta, tc)
+	fmt.Println(tm) // map[[5]int]chan<- [5]int
+	tf := reflect.FuncOf([]reflect.Type{ta},
+		[]reflect.Type{tp, tc}, false)
+	fmt.Println(tf) // func([5]int) (*[5]int, chan<- [5]int)
+	tt := reflect.StructOf([]reflect.StructField{
+		{Name: "Age", Type: reflect.TypeOf("abc")},
+	})
+	fmt.Println(tt)            // struct { Age string }
+	fmt.Println(tt.NumField()) // 1
 }
