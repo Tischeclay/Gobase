@@ -147,7 +147,7 @@ func main() {
 		[]reflect.Type{tp, tc}, false)
 	fmt.Println(tf) // func([5]int) (*[5]int, chan<- [5]int)
 	tt := reflect.StructOf([]reflect.StructField{
-		{Name: "Age", Type: reflect.TypeOf("abc")},
+		{Name: "Age", Type: reflect.TypeOf("abc")}
 	})
 	fmt.Println(tt)            // struct { Age string }
 	fmt.Println(tt.NumField()) // 1
