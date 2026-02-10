@@ -40,60 +40,74 @@
 //	t.M(3).M(4)
 //}
 
-package main
+//package main
+//
+//import "os"
+//
+//func withoutDefers(filepath string, head, body []byte) error {
+//	f, err := os.Open(filepath)
+//	if err != nil {
+//		return err
+//	}
+//
+//	_, err = f.Seek(16, 0)
+//	if err != nil {
+//		f.Close()
+//		return err
+//	}
+//
+//	_, err = f.Write(head)
+//	if err != nil {
+//		f.Close()
+//		return err
+//	}
+//
+//	_, err = f.Write(body)
+//	if err != nil {
+//		f.Close()
+//		return err
+//	}
+//
+//	err = f.Sync()
+//	f.Close()
+//	return err
+//}
+//
+//func withDefers(filepath string, head, body []byte) error {
+//	f, err := os.Open(filepath)
+//	if err != nil {
+//		return err
+//	}
+//	defer f.Close()
+//
+//	_, err = f.Seek(16, 0)
+//	if err != nil {
+//		return err
+//	}
+//
+//	_, err = f.Write(head)
+//	if err != nil {
+//		return err
+//	}
+//
+//	_, err = f.Write(body)
+//	if err != nil {
+//		return err
+//	}
+//
+//	return f.Sync()
+//}
 
-import "os"
+var m sync.Mutex
 
-func withoutDefers(filepath string, head, body []byte) error {
-	f, err := os.Open(filepath)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Seek(16, 0)
-	if err != nil {
-		f.Close()
-		return err
-	}
-
-	_, err = f.Write(head)
-	if err != nil {
-		f.Close()
-		return err
-	}
-
-	_, err = f.Write(body)
-	if err != nil {
-		f.Close()
-		return err
-	}
-
-	err = f.Sync()
-	f.Close()
-	return err
+func f1() {
+m.Lock()
+defer m.Unlock()
+doSomething()
 }
 
-func withDefers(filepath string, head, body []byte) error {
-	f, err := os.Open(filepath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	_, err = f.Seek(16, 0)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Write(head)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Write(body)
-	if err != nil {
-		return err
-	}
-
-	return f.Sync()
+func f2() {
+m.Lock()
+doSomething()
+m.Unlock()
 }
