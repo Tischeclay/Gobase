@@ -49,28 +49,47 @@
 //	_ = true
 //}
 
+//package main
+//
+//import "fmt"
+//
+//var p0, p1, p2, p3, p4, p5 *int
+//var x = 9999 // x#0
+//
+//func main() {
+//	p0 = &x
+//	var x = 888 // x#1
+//	p1 = &x
+//	for x := 70; x < 77; x++ { // x#2
+//		p2 = &x
+//		x := x - 70 //  // x#3
+//		p3 = &x
+//		if x := x - 3; x > 0 { // x#4
+//			p4 = &x
+//			x := -x // x#5
+//			p5 = &x
+//		}
+//	}
+//
+//	// 9999 888 77 6 3 -3
+//	fmt.Println(*p0, *p1, *p2, *p3, *p4, *p5)
+//}
+
 package main
 
 import "fmt"
 
-var p0, p1, p2, p3, p4, p5 *int
-var x = 9999 // x#0
+var f = func(b bool) {
+	fmt.Print("Goat")
+}
 
 func main() {
-	p0 = &x
-	var x = 888 // x#1
-	p1 = &x
-	for x := 70; x < 77; x++ { // x#2
-		p2 = &x
-		x := x - 70 //  // x#3
-		p3 = &x
-		if x := x - 3; x > 0 { // x#4
-			p4 = &x
-			x := -x // x#5
-			p5 = &x
+	var f = func(b bool) {
+		fmt.Print("Sheep")
+		if b {
+			fmt.Print(" ")
+			f(!b) // 此f乃包级变量f也。
 		}
 	}
-
-	// 9999 888 77 6 3 -3
-	fmt.Println(*p0, *p1, *p2, *p3, *p4, *p5)
+	f(true) // 此f为刚声明的局部变量f。
 }
