@@ -94,34 +94,66 @@
 //	f(true) // 此f为刚声明的局部变量f。
 //}
 
+//package main
+//
+//import "fmt"
+//import "strconv"
+//
+//func parseInt(s string) (int, error) {
+//	n, err := strconv.Atoi(s)
+//	if err != nil {
+//		// 一些新手Go程序员会认为下一行中声明
+//		// 的err变量已经在外层声明过了。然而其
+//		// 实下一行中的b和err都是新声明的变量。
+//		// 此新声明的err遮挡了外层声明的err。
+//		b, err := strconv.ParseBool(s)
+//		if err != nil {
+//			return 0, err
+//		}
+//
+//		// 如果代码运行到这里，一些新手Go程序员
+//		// 期望着内层的nil err将被返回。但是其实
+//		// 返回是外层的非nil err。因为内层的err
+//		// 的作用域到外层if代码块结尾就结束了。
+//		if b {
+//			n = 1
+//		}
+//	}
+//	return n, err
+//}
+//
+//func main() {
+//	fmt.Println(parseInt("TRUE"))
+//}
+
 package main
 
-import "fmt"
-import "strconv"
+import (
+	"fmt"
+)
 
-func parseInt(s string) (int, error) {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		// 一些新手Go程序员会认为下一行中声明
-		// 的err变量已经在外层声明过了。然而其
-		// 实下一行中的b和err都是新声明的变量。
-		// 此新声明的err遮挡了外层声明的err。
-		b, err := strconv.ParseBool(s)
-		if err != nil {
-			return 0, err
-		}
-
-		// 如果代码运行到这里，一些新手Go程序员
-		// 期望着内层的nil err将被返回。但是其实
-		// 返回是外层的非nil err。因为内层的err
-		// 的作用域到外层if代码块结尾就结束了。
-		if b {
-			n = 1
-		}
-	}
-	return n, err
-}
+const len = 3     // 遮挡了内置函数len
+var true = 0      // 遮挡了内置常量true
+type nil struct{} // 遮挡了内置变量nil
+func int()        {} // 遮挡了内置类型int
 
 func main() {
-	fmt.Println(parseInt("TRUE"))
+	fmt.Println("a weird program")
+	var output = fmt.Println
+
+	var fmt = [len]nil{{}, {}, {}} // 遮挡了包引入fmt
+	// var n = len(fmt) // error: len是一个常量
+	var n = cap(fmt) // 我们只好使用内置cap函数
+
+	// for关键字跟随着一个隐式代码块和一个显式代码块。
+	// 变量短声明中的true遮挡了全局变量true。
+	for true := 0; true < n; true++ {
+		// 下面声明的false遮挡了内置常量false。
+		var false = fmt[true]
+		// 下面声明的true遮挡了循环变量true。
+		var true = true + 1
+		// 下一行编译不通过，因为fmt是一个数组。
+		// fmt.Println(true, false)
+		output(true, false)
+	}
 }
