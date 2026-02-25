@@ -83,34 +83,56 @@
 //	fmt.Println(rnd)
 //}
 
+//package main
+//
+//import (
+//	"crypto/rand"
+//	"fmt"
+//	"os"
+//	"sort"
+//)
+//
+//func main() {
+//	values := make([]byte, 32*1024*1024)
+//	if _, err := rand.Read(values); err != nil {
+//		fmt.Println(err)
+//		os.Exit(1)
+//	}
+//
+//	done := make(chan struct{}) // 也可以是缓冲的
+//
+//	// 排序协程
+//	go func() {
+//		sort.Slice(values, func(i, j int) bool {
+//			return values[i] < values[j]
+//		})
+//		done <- struct{}{} // 通知排序已完成
+//	}()
+//
+//	// 并发地做一些其它事情...
+//
+//	<-done // 等待通知
+//	fmt.Println(values[0], values[len(values)-1])
+//}
+
 package main
 
-import (
-	"crypto/rand"
-	"fmt"
-	"os"
-	"sort"
-)
+import "fmt"
+
+type T int
+
+func IsClosed(ch <-chan T) bool {
+	select {
+	case <-ch:
+		return true
+	default:
+	}
+	return false
+}
 
 func main() {
-	values := make([]byte, 32*1024*1024)
-	if _, err := rand.Read(values); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	done := make(chan struct{}) // 也可以是缓冲的
-
-	// 排序协程
-	go func() {
-		sort.Slice(values, func(i, j int) bool {
-			return values[i] < values[j]
-		})
-		done <- struct{}{} // 通知排序已完成
-	}()
-
-	// 并发地做一些其它事情...
-
-	<-done // 等待通知
-	fmt.Println(values[0], values[len(values)-1])
+	c := make(chan T)
+	fmt.Println(IsClosed(c)) // false
+	close(c)
+	fmt.Println(IsClosed(c)) //true
 }
