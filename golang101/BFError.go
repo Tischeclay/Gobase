@@ -1,23 +1,38 @@
+//package main
+//
+//import (
+//	"runtime"
+//	"time"
+//)
+//
+//func main() {
+//	var a []int // nil
+//	var b bool  // false
+//
+//	// 一个匿名协程。
+//	go func() {
+//		a = make([]int, 3)
+//		b = true // 写入b
+//	}()
+//
+//	for !b { // 读取b
+//		time.Sleep(time.Second)
+//		runtime.Gosched()
+//	}
+//	a[0], a[1], a[2] = 0, 1, 2 // 可能会发生恐慌
+//}
+
 package main
 
-import (
-	"runtime"
-	"time"
-)
-
 func main() {
-	var a []int // nil
-	var b bool  // false
+	var a []int = nil
+	c := make(chan struct{})
 
-	// 一个匿名协程。
 	go func() {
 		a = make([]int, 3)
-		b = true // 写入b
+		c <- struct{}{}
 	}()
 
-	for !b { // 读取b
-		time.Sleep(time.Second)
-		runtime.Gosched()
-	}
-	a[0], a[1], a[2] = 0, 1, 2 // 可能会发生恐慌
+	<-c
+	a[0], a[1], a[2] = 0, 1, 2 // 绝不会造成恐慌
 }
