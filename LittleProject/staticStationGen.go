@@ -136,37 +136,37 @@ func main() {
 	fmt.Printf("完成! 生成了 %d 个页面到 %s\n", len(pages), *outputDir)
 }
 
-const defaultTemplate = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{{.Title}}</title>
-    <style>
-        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
-        article { margin: 40px 0; border-bottom: 1px solid #eee; }
-        .date { color: #666; font-size: 0.9em; }
-    </style>
-</head>
-<body>
-    <h1>{{.Title}}</h1>
-    
-    {{define "index"}}
-        {{range .Pages}}
-        <article>
-            <h2><a href="/{{.Slug}}/">{{.Title}}</a></h2>
-            <div class="date">{{.Date.Format "2006-01-02"}}</div>
-            <div>{{.Content}}</div>
-        </article>
-        {{end}}
-    {{end}}
-    
-    {{define "page"}}
-        <article>
-            <h1>{{.Title}}</h1>
-            <div class="date">{{.Date.Format "2006-01-02"}}</div>
-            <div>{{.Content}}</div>
-            <p><a href="/">← 返回首页</a></p>
-        </article>
-    {{end}}
-</body>
-</html>`
+//const defaultTemplate = `<!DOCTYPE html>
+//<html>
+//<head>
+//    <meta charset="UTF-8">
+//    <title>{{.Title}}</title>
+//    <style>
+//        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+//        article { margin: 40px 0; border-bottom: 1px solid #eee; }
+//        .date { color: #666; font-size: 0.9em; }
+//    </style>
+//</head>
+//<body>
+//    <h1>{{.Title}}</h1>
+//
+//    {{define "index"}}
+//        {{range .Pages}}
+//        <article>
+//            <h2><a href="/{{.Slug}}/">{{.Title}}</a></h2>
+//            <div class="date">{{.Date.Format "2006-01-02"}}</div>
+//            <div>{{.Content}}</div>
+//        </article>
+//        {{end}}
+//    {{end}}
+//
+//    {{define "page"}}
+//        <article>
+//            <h1>{{.Title}}</h1>
+//            <div class="date">{{.Date.Format "2006-01-02"}}</div>
+//            <div>{{.Content}}</div>
+//            <p><a href="/">← 返回首页</a></p>
+//        </article>
+//    {{end}}
+//</body>
+//</html>`
