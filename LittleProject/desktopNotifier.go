@@ -5,15 +5,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/gen2brain/beeep"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/gen2brain/beeep"
-	"github.com/gorilla/websocket"
 )
 
 type Notification struct {
