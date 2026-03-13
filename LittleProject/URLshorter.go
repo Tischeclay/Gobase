@@ -190,6 +190,6 @@ func main() {
 		store.Redirect(w, r)
 	})
 
-	log.Println("Server starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Server starting on :8088")
+	log.Fatal(http.ListenAndServe(":8088", nil))
 }
