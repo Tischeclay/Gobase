@@ -361,7 +361,7 @@ func main() {
 
 	// 创建网关
 	gateway := NewGateway()
-	gateway.enableAuth = *authToken != ""
+	gateway.enableAuth = *authToken != " "
 	gateway.authToken = *authToken
 
 	// 加载路由配置
