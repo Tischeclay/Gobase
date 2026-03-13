@@ -71,7 +71,7 @@ func (s *URLStore) CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := map[string]string{
-		"short_url":    fmt.Sprintf("http://localhost:8080/%s", shortCode),
+		"short_url":    fmt.Sprintf("http://localhost:8088/%s", shortCode),
 		"original_url": data.OriginalURL,
 	}
 
