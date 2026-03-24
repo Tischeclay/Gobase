@@ -103,4 +103,5 @@ func example2BufferedChannel() {
 
 func main() {
 	exampleBasicChannel()
+	example2BufferedChannel()
 }
