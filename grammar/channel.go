@@ -74,6 +74,33 @@ func exampleBasicChannel() {
 	fmt.Printf("主goroutine:接收到数据%d\n", value)
 }
 
+func example2BufferedChannel() {
+	fmt.Println("\n=== 示例2: 带缓冲通道（异步通信）===")
+
+	// 创建容量为3的缓冲通道
+	ch := make(chan string, 3)
+
+	// 发送数据（不会阻塞直到缓冲区满）
+	ch <- "消息1"
+	ch <- "消息2"
+	ch <- "消息3"
+	fmt.Println("已发送3条消息，缓冲区使用情况:")
+	fmt.Printf("  长度: %d, 容量: %d\n", len(ch), cap(ch))
+
+	// 尝试发送第4条消息（会阻塞）
+	go func() {
+		time.Sleep(1 * time.Second)
+		fmt.Println("准备发送第4条消息...")
+		ch <- "消息4"
+		fmt.Println("第4条消息已发送")
+	}()
+	// 接收数据
+	for i := 0; i < 4; i++ {
+		msg := <-ch
+		fmt.Printf("接收: %s (缓冲区剩余: %d)\n", msg, len(ch))
+	}
+}
+
 func main() {
 	exampleBasicChannel()
 }
