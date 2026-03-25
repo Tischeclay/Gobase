@@ -101,7 +101,34 @@ func example2BufferedChannel() {
 	}
 }
 
+func example3DirectionalChannel() {
+	fmt.Println("\n===单向通道，限制操作方向")
+	// 双向通道
+	ch := make(chan int)
+
+	// 只发送函数
+	sendOnly := func(send chan<- int) {
+		for i := 1; i < 5; i++ {
+			send <- i
+			fmt.Printf("发送: %d\n", i)
+			time.Sleep(100 * time.Millisecond)
+		}
+		close(send)
+	}
+
+	// 只接收函数
+	receiveOnly := func(recv <-chan int) {
+		for value := range recv {
+			fmt.Println("接收: %d\n", value)
+		}
+	}
+
+	go sendOnly(ch)
+	receiveOnly(ch)
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
+	example3DirectionalChannel()
 }
