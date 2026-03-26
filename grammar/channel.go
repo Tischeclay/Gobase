@@ -130,5 +130,5 @@ func example3DirectionalChannel() {
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
-	//example3DirectionalChannel()
+	example3DirectionalChannel()
 }
