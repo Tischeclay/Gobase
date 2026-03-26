@@ -127,8 +127,46 @@ func example3DirectionalChannel() {
 	receiveOnly(ch)
 }
 
+func example4Select() {
+	fmt.Println("\n=== 示例4: Select多路复用 ===")
+
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	ch3 := make(chan string)
+
+	// 模拟多个服务
+	go func() {
+		time.Sleep(1 * time.Second)
+		ch1 <- "来自服务1的消息"
+	}()
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch2 <- "来自服务2的消息"
+	}()
+
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		ch3 <- "来自服务3的消息"
+	}()
+	// 使用select同时等待多个通道
+	for i := 0; i < 3; i++ {
+		select {
+		case msg1 := <-ch1:
+			fmt.Printf("✅ 收到: %s\n", msg1)
+		case msg2 := <-ch2:
+			fmt.Printf("✅ 收到: %s\n", msg2)
+		case msg3 := <-ch3:
+			fmt.Printf("✅ 收到: %s\n", msg3)
+		case <-time.After(3 * time.Second):
+			fmt.Println("⏰ 超时")
+		}
+	}
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
 	example3DirectionalChannel()
+	example4Select()
 }
