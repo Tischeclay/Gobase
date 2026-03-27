@@ -52,6 +52,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -164,9 +165,71 @@ func example4Select() {
 	}
 }
 
+func example5ProducerConsumer() {
+	fmt.Println("\n=== 示例5: 生产者-消费者模式 ===")
+
+	const (
+		producerCount = 3
+		consumerCount = 2
+		bufferSize    = 5
+	)
+
+	// 任务通道
+	tasks := make(chan int, bufferSize)
+	results := make(chan int, bufferSize)
+	done := make(chan bool)
+
+	// 生产者
+	var wg sync.WaitGroup
+	for i := 0; i < producerCount; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			for j := 1; j <= 5; j++ {
+				task := id*100 + j
+				tasks <- task
+				fmt.Printf("生产者%d 生产: %d\n", id, task)
+				time.Sleep(time.Duration(100) * time.Millisecond)
+			}
+		}(i)
+	}
+
+	// 消费者
+	for i := 0; i < consumerCount; i++ {
+		go func(id int) {
+			for task := range tasks {
+				// 模拟处理耗时
+				time.Sleep(150 * time.Millisecond)
+				result := task * 2
+				results <- result
+				fmt.Printf("  消费者%d 消费: %d -> %d\n", id, task, result)
+			}
+		}(i)
+	}
+	// 等待所有生产者完成
+	go func() {
+		wg.Wait()
+		close(tasks) // 关闭任务通道
+	}()
+
+	// 收集结果
+	go func() {
+		for result := range results {
+			fmt.Printf("结果收集: %d\n", result)
+		}
+		done <- true
+	}()
+
+	// 等待所有结果处理完成
+	time.Sleep(5 * time.Second)
+	close(results)
+	<-done
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
 	example3DirectionalChannel()
 	example4Select()
+	example5ProducerConsumer()
 }
