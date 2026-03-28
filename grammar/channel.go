@@ -226,10 +226,77 @@ func example5ProducerConsumer() {
 	<-done
 }
 
+func example6FanOutFanIn() {
+	fmt.Println("\n=== 扇入扇出模式 ===")
+	// 输入通道
+	input := make(chan int)
+	// 启动多个协程
+	workers := 3
+	outputs := make([]<-chan int, workers)
+	for i := 0; i < workers; i++ {
+		outputs[i] = worker(i, input)
+	}
+	// 合并结果（扇入）
+	merged := merge(outputs...)
+
+	// 发送任务
+	go func() {
+		for i := 1; i <= 10; i++ {
+			input <- i
+		}
+		close(input)
+	}()
+
+	// 接收结果
+	for result := range merged {
+		fmt.Printf("最终结果: %d\n", result)
+	}
+}
+
+// 工作协程
+func worker(id int, input <-chan int) <-chan int {
+	output := make(chan int)
+	go func() {
+		defer close(output)
+		for value := range input {
+			// 模拟处理
+			time.Sleep(50 * time.Millisecond)
+			result := value * (id + 1)
+			fmt.Printf("Worker %d 处理 %d -> %d\n", id, value, result)
+			output <- result
+		}
+	}()
+	return output
+}
+
+// 合并多个通道
+func merge(channels ...<-chan int) <-chan int {
+	var wg sync.WaitGroup
+	out := make(chan int)
+	// 为每个通道启动一个协程
+	for _, ch := range channels {
+		wg.Add(1)
+		go func(c <-chan int) {
+			defer wg.Done()
+			for value := range c {
+				out <- value
+			}
+		}(ch)
+
+	}
+	// 等待所有通道关闭后关闭输出通道
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+	return out
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
 	example3DirectionalChannel()
 	example4Select()
 	example5ProducerConsumer()
+	example6FanOutFanIn()
 }
