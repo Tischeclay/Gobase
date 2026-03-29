@@ -292,6 +292,44 @@ func merge(channels ...<-chan int) <-chan int {
 	return out
 }
 
+func example8CloseChannel() {
+	fmt.Println("\n=== 示例8: 关闭通道和range遍历 ===")
+
+	ch := make(chan int)
+
+	// 发送者
+	go func() {
+		for i := 1; i <= 5; i++ {
+			ch <- i
+			fmt.Printf("发送: %d\n", i)
+		}
+		close(ch) // 关闭通道
+		fmt.Println("通道已关闭")
+	}()
+
+	// 使用range遍历（自动在通道关闭时退出）
+	fmt.Println("开始接收:")
+	for value := range ch {
+		fmt.Printf("接收: %d\n", value)
+	}
+	fmt.Println("通道已关闭，range循环结束")
+
+	// 检查通道是否关闭
+	ch2 := make(chan int, 2)
+	ch2 <- 1
+	ch2 <- 2
+	close(ch2)
+
+	value, ok := <-ch2
+	fmt.Printf("读取: %d, 通道状态: %v\n", value, ok)
+
+	value, ok = <-ch2
+	fmt.Printf("读取: %d, 通道状态: %v\n", value, ok)
+
+	value, ok = <-ch2
+	fmt.Printf("读取: %d, 通道状态: %v\n", value, ok)
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
