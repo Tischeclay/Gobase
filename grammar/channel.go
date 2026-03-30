@@ -337,4 +337,5 @@ func main() {
 	example4Select()
 	example5ProducerConsumer()
 	example6FanOutFanIn()
+	example8CloseChannel()
 }
