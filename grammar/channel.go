@@ -330,6 +330,167 @@ func example8CloseChannel() {
 	fmt.Printf("读取: %d, 通道状态: %v\n", value, ok)
 }
 
+func example9Semaphore() {
+	fmt.Println("\n=== 示例9: 使用通道实现信号量 ===")
+
+	const maxConcurrent = 3
+	semaphore := make(chan struct{}, maxConcurrent)
+
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 10; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+
+			// 获取信号量
+			semaphore <- struct{}{}
+			defer func() { <-semaphore }()
+
+			// 模拟工作
+			fmt.Printf("任务 %d 开始执行 (并发数: %d)\n", id, len(semaphore))
+			time.Sleep(time.Second)
+			fmt.Printf("任务 %d 完成\n", id)
+		}(i)
+	}
+
+	wg.Wait()
+	fmt.Println("所有任务完成")
+}
+
+// ==================== 10. 管道模式 ====================
+
+// 示例10: 管道模式
+func example10Pipeline() {
+	fmt.Println("\n=== 示例10: 管道模式 ===")
+
+	// 生成数字
+	generate := func(nums ...int) <-chan int {
+		out := make(chan int)
+		go func() {
+			for _, n := range nums {
+				out <- n
+			}
+			close(out)
+		}()
+		return out
+	}
+
+	// 平方
+	square := func(in <-chan int) <-chan int {
+		out := make(chan int)
+		go func() {
+			for n := range in {
+				out <- n * n
+			}
+			close(out)
+		}()
+		return out
+	}
+
+	// 过滤奇数
+	filterOdd := func(in <-chan int) <-chan int {
+		out := make(chan int)
+		go func() {
+			for n := range in {
+				if n%2 == 0 {
+					out <- n
+				}
+			}
+			close(out)
+		}()
+		return out
+	}
+
+	// 求和
+	sum := func(in <-chan int) <-chan int {
+		out := make(chan int)
+		go func() {
+			total := 0
+			for n := range in {
+				total += n
+			}
+			out <- total
+			close(out)
+		}()
+		return out
+	}
+
+	// 构建管道
+	numbers := generate(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+	squared := square(numbers)
+	filtered := filterOdd(squared)
+	result := sum(filtered)
+
+	// 获取结果
+	total := <-result
+	fmt.Printf("最终结果: %d\n", total)
+
+	// 解释计算过程
+	fmt.Println("\n计算过程:")
+	fmt.Println("1. 原始数字: 1,2,3,4,5,6,7,8,9,10")
+	fmt.Println("2. 平方后: 1,4,9,16,25,36,49,64,81,100")
+	fmt.Println("3. 过滤奇数(取偶数): 4,16,36,64,100")
+	fmt.Println("4. 求和: 4+16+36+64+100 = 220")
+}
+
+// ==================== 主函数 ====================
+
+func printSummary() {
+	summary := `
+┌─────────────────────────────────────────────────────────────────────┐
+│                     Go语言通道（Channel）工作原理                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  1. 基本概念                                                         │
+│     • 通道是goroutine之间的通信管道                                   │
+│     • 遵循"CSP"并发模型（Communicating Sequential Processes）        │
+│     • 通过通信来共享内存，而不是通过共享内存来通信                     │
+│                                                                      │
+│  2. 通道类型                                                         │
+│     • 无缓冲通道：make(chan T)                                       │
+│       - 同步通信，发送和接收必须同时准备好                            │
+│       - 保证数据传递的同步性                                         │
+│                                                                      │
+│     • 缓冲通道：make(chan T, capacity)                               │
+│       - 异步通信，发送方在缓冲区未满时不会阻塞                        │
+│       - 接收方在缓冲区非空时不会阻塞                                  │
+│                                                                      │
+│  3. 通道操作                                                         │
+│     • 发送：ch <- value                                              │
+│     • 接收：value := <-ch                                            │
+│     • 关闭：close(ch)                                                │
+│     • 检查：value, ok := <-ch                                        │
+│                                                                      │
+│  4. 通道特性                                                         │
+│     • 阻塞特性：发送和接收会阻塞直到另一方准备好                      │
+│     • 方向性：可以限制通道为只发送或只接收                            │
+│     • 可关闭：关闭后不能再发送，但可以继续接收                        │
+│     • 并发安全：通道操作是线程安全的                                  │
+│                                                                      │
+│  5. Select语句                                                       │
+│     • 同时等待多个通道操作                                            │
+│     • 随机选择可执行的case                                            │
+│     • 可设置超时和默认操作                                            │
+│                                                                      │
+│  6. 常见模式                                                         │
+│     • 生产者-消费者：解耦生产和消费                                   │
+│     • 扇出扇入：多路复用和分发                                        │
+│     • 管道：数据流处理                                                │
+│     • 信号量：控制并发数                                              │
+│                                                                      │
+│  7. 最佳实践                                                         │
+│     • 由发送方关闭通道                                                │
+│     • 不要在接收方关闭通道                                            │
+│     • 使用range遍历直到通道关闭                                       │
+│     • 避免通道泄漏（goroutine未退出）                                 │
+│     • 合理使用缓冲大小                                                │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+    `
+	fmt.Println(summary)
+}
+
 func main() {
 	exampleBasicChannel()
 	example2BufferedChannel()
