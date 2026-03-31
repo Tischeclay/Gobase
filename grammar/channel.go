@@ -499,4 +499,5 @@ func main() {
 	example5ProducerConsumer()
 	example6FanOutFanIn()
 	example8CloseChannel()
+	example10Pipeline()
 }
