@@ -484,33 +484,6 @@ func (l *CircularLinkedList) Add(val int) {
 	l.Size++
 }
 
-// Print 打印循环链表
-func (l *CircularLinkedList) Print(maxDisplay int) {
-	if l.Head == nil {
-		fmt.Println("循环链表: 空")
-		return
-	}
-
-	elements := make([]string, 0)
-	current := l.Head
-	count := 0
-
-	for current != nil && count < maxDisplay {
-		elements = append(elements, fmt.Sprintf("%d", current.Val))
-		current = current.Next
-		count++
-		if current == l.Head {
-			break
-		}
-	}
-
-	if count < l.Size {
-		fmt.Printf("循环链表: %s -> ... (循环, 总长度: %d)\n", strings.Join(elements, " -> "), l.Size)
-	} else {
-		fmt.Printf("循环链表: %s -> (回到头节点, 长度: %d)\n", strings.Join(elements, " -> "), l.Size)
-	}
-}
-
 // ==================== 示例和测试 ====================
 
 func main() {
