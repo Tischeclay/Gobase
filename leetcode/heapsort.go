@@ -617,9 +617,7 @@ func heapifyWithPrint(arr []int, n, i int) {
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-
-	fmt.Println("==================== Go语言堆排序完整实现 ====================")
-
+	
 	// 算法详解
 	explainHeapSort()
 
