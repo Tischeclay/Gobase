@@ -250,55 +250,6 @@ func ExternalMergeSort(arr []int, chunkSize int) []int {
 	return multiWayMerge(chunks)
 }
 
-// multiWayMerge 多路归并
-func multiWayMerge(chunks [][]int) []int {
-	type Item struct {
-		value int
-		chunk int
-		index int
-	}
-
-	// 创建最小堆
-	heap := make([]Item, 0, len(chunks))
-	for i, chunk := range chunks {
-		if len(chunk) > 0 {
-			heap = append(heap, Item{chunk[0], i, 0})
-		}
-	}
-
-	// 构建堆
-	for i := len(heap)/2 - 1; i >= 0; i-- {
-		heapify(heap, i)
-	}
-
-	// 归并
-	result := make([]int, 0)
-	for len(heap) > 0 {
-		// 取出最小值
-		item := heap[0]
-		result = append(result, item.value)
-
-		// 从对应的块中取下一个元素
-		if item.index+1 < len(chunks[item.chunk]) {
-			heap[0] = Item{
-				value: chunks[item.chunk][item.index+1],
-				chunk: item.chunk,
-				index: item.index + 1,
-			}
-			heapify(heap, 0)
-		} else {
-			// 移除该块
-			heap[0] = heap[len(heap)-1]
-			heap = heap[:len(heap)-1]
-			if len(heap) > 0 {
-				heapify(heap, 0)
-			}
-		}
-	}
-
-	return result
-}
-
 // ==================== 自然归并排序 ====================
 
 // NaturalMergeSort 自然归并排序（利用已有有序序列）
