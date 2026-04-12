@@ -128,24 +128,6 @@ func minHeapify(arr []int, n, i int) {
 	}
 }
 
-// ==================== 原地堆排序 ====================
-
-// InPlaceHeapSort 原地堆排序（不创建额外数组）
-func InPlaceHeapSort(arr []int) {
-	n := len(arr)
-
-	// 构建堆
-	for i := n/2 - 1; i >= 0; i-- {
-		siftDown(arr, n, i)
-	}
-
-	// 排序
-	for i := n - 1; i > 0; i-- {
-		arr[0], arr[i] = arr[i], arr[0]
-		siftDown(arr, i, 0)
-	}
-}
-
 // siftDown 下沉操作
 func siftDown(arr []int, n, i int) {
 	for {
