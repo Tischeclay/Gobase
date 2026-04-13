@@ -109,25 +109,6 @@ func MinHeapSort(arr []int) {
 	}
 }
 
-// minHeapify 最小堆调整
-func minHeapify(arr []int, n, i int) {
-	smallest := i
-	left := 2*i + 1
-	right := 2*i + 2
-
-	if left < n && arr[left] < arr[smallest] {
-		smallest = left
-	}
-	if right < n && arr[right] < arr[smallest] {
-		smallest = right
-	}
-
-	if smallest != i {
-		arr[i], arr[smallest] = arr[smallest], arr[i]
-		minHeapify(arr, n, smallest)
-	}
-}
-
 // ==================== 堆排序变体 ====================
 
 // HeapSortWithK 只找出前K个最大元素
