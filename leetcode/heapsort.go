@@ -128,30 +128,6 @@ func minHeapify(arr []int, n, i int) {
 	}
 }
 
-// siftDown 下沉操作
-func siftDown(arr []int, n, i int) {
-	for {
-		child := 2*i + 1
-		if child >= n {
-			break
-		}
-
-		// 找到较大的子节点
-		if child+1 < n && arr[child+1] > arr[child] {
-			child++
-		}
-
-		// 如果父节点大于等于子节点，停止
-		if arr[i] >= arr[child] {
-			break
-		}
-
-		// 交换
-		arr[i], arr[child] = arr[child], arr[i]
-		i = child
-	}
-}
-
 // ==================== 堆排序变体 ====================
 
 // HeapSortWithK 只找出前K个最大元素
