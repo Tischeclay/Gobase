@@ -111,37 +111,6 @@ func MinHeapSort(arr []int) {
 
 // ==================== 堆排序变体 ====================
 
-// HeapSortWithK 只找出前K个最大元素
-func HeapSortWithK(arr []int, k int) []int {
-	if k > len(arr) {
-		k = len(arr)
-	}
-
-	// 构建最小堆（用于找出前K个最大元素）
-	heap := make([]int, k)
-	copy(heap, arr[:k])
-
-	// 构建最小堆
-	for i := k/2 - 1; i >= 0; i-- {
-		minHeapify(heap, k, i)
-	}
-
-	// 处理剩余元素
-	for i := k; i < len(arr); i++ {
-		if arr[i] > heap[0] {
-			heap[0] = arr[i]
-			minHeapify(heap, k, 0)
-		}
-	}
-
-	// 对结果排序
-	result := make([]int, k)
-	copy(result, heap)
-	HeapSort(result)
-
-	return result
-}
-
 // ==================== 并发堆排序 ====================
 
 // ParallelHeapSort 并发堆排序（分块处理）
