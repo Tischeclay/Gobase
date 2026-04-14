@@ -93,26 +93,6 @@ func heapifyIterative(arr []int, n, i int) {
 
 // ==================== 最小堆排序 ====================
 
-// MinHeapSort 最小堆排序（降序）
-func MinHeapSort(arr []int) {
-	n := len(arr)
-
-	// 构建最小堆
-	for i := n/2 - 1; i >= 0; i-- {
-		minHeapify(arr, n, i)
-	}
-
-	// 提取元素
-	for i := n - 1; i > 0; i-- {
-		arr[0], arr[i] = arr[i], arr[0]
-		minHeapify(arr, i, 0)
-	}
-}
-
-// ==================== 堆排序变体 ====================
-
-// ==================== 并发堆排序 ====================
-
 // ParallelHeapSort 并发堆排序（分块处理）
 func ParallelHeapSort(arr []int, numWorkers int) {
 	if len(arr) <= 1000 {
