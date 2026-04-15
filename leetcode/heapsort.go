@@ -91,49 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-// ==================== 最小堆排序 ====================
-
-// ParallelHeapSort 并发堆排序（分块处理）
-func ParallelHeapSort(arr []int, numWorkers int) {
-	if len(arr) <= 1000 {
-		HeapSort(arr)
-		return
-	}
-
-	// 分块
-	chunkSize := len(arr) / numWorkers
-	chunks := make([][]int, numWorkers)
-
-	for i := 0; i < numWorkers; i++ {
-		start := i * chunkSize
-		end := start + chunkSize
-		if i == numWorkers-1 {
-			end = len(arr)
-		}
-
-		chunk := make([]int, end-start)
-		copy(chunk, arr[start:end])
-		chunks[i] = chunk
-	}
-
-	// 并发排序各块
-	done := make(chan bool, numWorkers)
-	for i := 0; i < numWorkers; i++ {
-		go func(idx int) {
-			HeapSort(chunks[idx])
-			done <- true
-		}(i)
-	}
-
-	// 等待所有块排序完成
-	for i := 0; i < numWorkers; i++ {
-		<-done
-	}
-
-	// 合并排序结果（使用堆合并）
-	mergeSortedChunks(arr, chunks)
-}
-
 func mergeSortedChunks(arr []int, chunks [][]int) {
 	type Item struct {
 		value int
