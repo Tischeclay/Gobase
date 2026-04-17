@@ -96,17 +96,6 @@ type MaxHeap struct {
 	data []int
 }
 
-func NewMaxHeap() *MaxHeap {
-	return &MaxHeap{
-		data: make([]int, 0),
-	}
-}
-
-func (h *MaxHeap) Push(value int) {
-	h.data = append(h.data, value)
-	h.up(len(h.data) - 1)
-}
-
 func (h *MaxHeap) Pop() int {
 	if len(h.data) == 0 {
 		return -1
