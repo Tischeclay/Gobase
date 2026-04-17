@@ -91,27 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-func heapifyItems(heap []Item, i int) {
-	n := len(heap)
-	smallest := i
-	left := 2*i + 1
-	right := 2*i + 2
-
-	if left < n && heap[left].value < heap[smallest].value {
-		smallest = left
-	}
-	if right < n && heap[right].value < heap[smallest].value {
-		smallest = right
-	}
-
-	if smallest != i {
-		heap[i], heap[smallest] = heap[smallest], heap[i]
-		heapifyItems(heap, smallest)
-	}
-}
-
-// ==================== 堆数据结构实现 ====================
-
 // MaxHeap 最大堆数据结构
 type MaxHeap struct {
 	data []int
