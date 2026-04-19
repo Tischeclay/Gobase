@@ -93,19 +93,6 @@ func heapifyIterative(arr []int, n, i int) {
 
 // MaxHeap 最大堆数据结构
 
-func (h *MaxHeap) Pop() int {
-	if len(h.data) == 0 {
-		return -1
-	}
-
-	max := h.data[0]
-	h.data[0] = h.data[len(h.data)-1]
-	h.data = h.data[:len(h.data)-1]
-	h.down(0)
-
-	return max
-}
-
 func (h *MaxHeap) Peek() int {
 	if len(h.data) == 0 {
 		return -1
