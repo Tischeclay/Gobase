@@ -91,12 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-// MaxHeap 最大堆数据结构
-
-func (h *MaxHeap) Size() int {
-	return len(h.data)
-}
-
 func (h *MaxHeap) up(i int) {
 	for i > 0 {
 		parent := (i - 1) / 2
