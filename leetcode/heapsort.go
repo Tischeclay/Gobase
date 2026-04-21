@@ -91,17 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-func (h *MaxHeap) up(i int) {
-	for i > 0 {
-		parent := (i - 1) / 2
-		if h.data[parent] >= h.data[i] {
-			break
-		}
-		h.data[parent], h.data[i] = h.data[i], h.data[parent]
-		i = parent
-	}
-}
-
 func (h *MaxHeap) down(i int) {
 	n := len(h.data)
 	for {
