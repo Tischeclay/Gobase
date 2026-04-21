@@ -91,29 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-func (h *MaxHeap) down(i int) {
-	n := len(h.data)
-	for {
-		largest := i
-		left := 2*i + 1
-		right := 2*i + 2
-
-		if left < n && h.data[left] > h.data[largest] {
-			largest = left
-		}
-		if right < n && h.data[right] > h.data[largest] {
-			largest = right
-		}
-
-		if largest == i {
-			break
-		}
-
-		h.data[i], h.data[largest] = h.data[largest], h.data[i]
-		i = largest
-	}
-}
-
 // ==================== 辅助函数 ====================
 
 // GenerateRandomArray 生成随机数组
