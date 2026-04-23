@@ -91,24 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-// GenerateSortedArray 生成已排序数组
-func GenerateSortedArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = i
-	}
-	return arr
-}
-
-// GenerateReverseArray 生成逆序数组
-func GenerateReverseArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = n - i
-	}
-	return arr
-}
-
 // IsSorted 检查数组是否已排序
 func IsSorted(arr []int) bool {
 	for i := 1; i < len(arr); i++ {
