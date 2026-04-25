@@ -91,22 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-// ==================== 性能测试 ====================
-
-func benchmarkHeapSort(name string, sortFunc func([]int), arr []int) time.Duration {
-	testArr := CopyArray(arr)
-	start := time.Now()
-	sortFunc(testArr)
-	duration := time.Since(start)
-
-	if !IsSorted(testArr) {
-		fmt.Printf("❌ %s 排序失败！\n", name)
-		return 0
-	}
-
-	return duration
-}
-
 func runBenchmarks(size int) {
 	fmt.Printf("\n========== 堆排序性能测试 (数组大小: %d) ==========\n", size)
 
