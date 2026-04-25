@@ -91,41 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-func runBenchmarks(size int) {
-	fmt.Printf("\n========== 堆排序性能测试 (数组大小: %d) ==========\n", size)
-
-	testCases := []struct {
-		name string
-		gen  func(int) []int
-	}{
-		{"随机数组", GenerateRandomArray},
-		{"已排序数组", GenerateSortedArray},
-		{"逆序数组", GenerateReverseArray},
-	}
-
-	algorithms := []struct {
-		name string
-		fn   func([]int)
-	}{
-		{"标准堆排序", HeapSort},
-		{"迭代堆排序", HeapSortIterative},
-		{"原地堆排序", InPlaceHeapSort},
-		{"最小堆排序", MinHeapSort},
-	}
-
-	for _, tc := range testCases {
-		fmt.Printf("\n📊 %s:\n", tc.name)
-		arr := tc.gen(size)
-
-		for _, algo := range algorithms {
-			duration := benchmarkHeapSort(algo.name, algo.fn, arr)
-			if duration > 0 {
-				fmt.Printf("   %-15s: %v\n", algo.name, duration)
-			}
-		}
-	}
-}
-
 // ==================== 堆数据结构演示 ====================
 
 func demoHeap() {
