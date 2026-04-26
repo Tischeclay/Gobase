@@ -91,32 +91,6 @@ func heapifyIterative(arr []int, n, i int) {
 	}
 }
 
-// ==================== 堆数据结构演示 ====================
-
-func demoHeap() {
-	fmt.Println("\n========== 堆数据结构演示 ==========")
-
-	heap := NewMaxHeap()
-
-	// 插入元素
-	values := []int{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5}
-	fmt.Printf("插入元素: %v\n", values)
-
-	for _, v := range values {
-		heap.Push(v)
-		fmt.Printf("插入 %d 后，堆顶: %d\n", v, heap.Peek())
-	}
-
-	fmt.Printf("\n堆大小: %d\n", heap.Size())
-
-	// 弹出元素
-	fmt.Println("\n弹出所有元素:")
-	for heap.Size() > 0 {
-		fmt.Printf("%d ", heap.Pop())
-	}
-	fmt.Println()
-}
-
 // ==================== 可视化堆排序 ====================
 
 func visualHeapSort(arr []int) {
