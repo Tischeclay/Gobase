@@ -26,30 +26,6 @@ func BubbleSort(arr []int) {
 	}
 }
 
-// BubbleSortOptimized 优化版冒泡排序（双向）
-func BubbleSortOptimized(arr []int) {
-	n := len(arr)
-	left, right := 0, n-1
-
-	for left < right {
-		// 正向冒泡，将最大值移到右边
-		for i := left; i < right; i++ {
-			if arr[i] > arr[i+1] {
-				arr[i], arr[i+1] = arr[i+1], arr[i]
-			}
-		}
-		right--
-
-		// 反向冒泡，将最小值移到左边
-		for i := right; i > left; i-- {
-			if arr[i-1] > arr[i] {
-				arr[i-1], arr[i] = arr[i], arr[i-1]
-			}
-		}
-		left++
-	}
-}
-
 // ==================== 快速排序 ====================
 
 // QuickSort 标准快速排序
