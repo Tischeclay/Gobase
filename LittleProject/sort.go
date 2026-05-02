@@ -36,33 +36,6 @@ func QuickSort(arr []int) {
 	quickSortRecursive(arr, 0, len(arr)-1)
 }
 
-func quickSortRecursive(arr []int, low, high int) {
-	if low < high {
-		// 分区操作
-		pi := partition(arr, low, high)
-
-		// 递归排序左右两部分
-		quickSortRecursive(arr, low, pi-1)
-		quickSortRecursive(arr, pi+1, high)
-	}
-}
-
-// 分区函数（使用最后一个元素作为基准）
-func partition(arr []int, low, high int) int {
-	pivot := arr[high]
-	i := low - 1
-
-	for j := low; j < high; j++ {
-		if arr[j] <= pivot {
-			i++
-			arr[i], arr[j] = arr[j], arr[i]
-		}
-	}
-
-	arr[i+1], arr[high] = arr[high], arr[i+1]
-	return i + 1
-}
-
 // QuickSortRandom 随机基准快速排序（避免最坏情况）
 func QuickSortRandom(arr []int) {
 	if len(arr) <= 1 {
