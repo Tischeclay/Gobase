@@ -36,14 +36,6 @@ func QuickSort(arr []int) {
 	quickSortRecursive(arr, 0, len(arr)-1)
 }
 
-// QuickSortRandom 随机基准快速排序（避免最坏情况）
-func QuickSortRandom(arr []int) {
-	if len(arr) <= 1 {
-		return
-	}
-	quickSortRandom(arr, 0, len(arr)-1)
-}
-
 func quickSortRandom(arr []int, low, high int) {
 	if low < high {
 		// 随机选择基准
