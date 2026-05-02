@@ -26,16 +26,6 @@ func BubbleSort(arr []int) {
 	}
 }
 
-// ==================== 快速排序 ====================
-
-// QuickSort 标准快速排序
-func QuickSort(arr []int) {
-	if len(arr) <= 1 {
-		return
-	}
-	quickSortRecursive(arr, 0, len(arr)-1)
-}
-
 func quickSortRandom(arr []int, low, high int) {
 	if low < high {
 		// 随机选择基准
