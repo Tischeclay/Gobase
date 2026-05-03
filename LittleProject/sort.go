@@ -26,18 +26,6 @@ func BubbleSort(arr []int) {
 	}
 }
 
-func quickSortRandom(arr []int, low, high int) {
-	if low < high {
-		// 随机选择基准
-		randomIndex := low + rand.Intn(high-low+1)
-		arr[randomIndex], arr[high] = arr[high], arr[randomIndex]
-
-		pi := partition(arr, low, high)
-		quickSortRandom(arr, low, pi-1)
-		quickSortRandom(arr, pi+1, high)
-	}
-}
-
 // QuickSortThreeWay 三路快排（处理重复元素）
 func QuickSortThreeWay(arr []int) {
 	if len(arr) <= 1 {
