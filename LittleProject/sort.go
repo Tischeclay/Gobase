@@ -6,17 +6,6 @@ import (
 	"time"
 )
 
-func quickSortThreeWay(arr []int, low, high int) {
-	if low >= high {
-		return
-	}
-
-	// 三路分区
-	lt, gt := threeWayPartition(arr, low, high)
-	quickSortThreeWay(arr, low, lt-1)
-	quickSortThreeWay(arr, gt+1, high)
-}
-
 // ==================== 辅助函数 ====================
 
 // GenerateRandomArray 生成随机数组
