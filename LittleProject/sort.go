@@ -8,15 +8,6 @@ import (
 
 // ==================== 辅助函数 ====================
 
-// GenerateRandomArray 生成随机数组
-func GenerateRandomArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = rand.Intn(n * 10)
-	}
-	return arr
-}
-
 // GenerateSortedArray 生成已排序数组
 func GenerateSortedArray(n int) []int {
 	arr := make([]int, n)
