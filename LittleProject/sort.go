@@ -17,28 +17,6 @@ func quickSortThreeWay(arr []int, low, high int) {
 	quickSortThreeWay(arr, gt+1, high)
 }
 
-func threeWayPartition(arr []int, low, high int) (int, int) {
-	pivot := arr[low]
-	lt := low
-	gt := high
-	i := low + 1
-
-	for i <= gt {
-		if arr[i] < pivot {
-			arr[lt], arr[i] = arr[i], arr[lt]
-			lt++
-			i++
-		} else if arr[i] > pivot {
-			arr[i], arr[gt] = arr[gt], arr[i]
-			gt--
-		} else {
-			i++
-		}
-	}
-
-	return lt, gt
-}
-
 // ==================== 辅助函数 ====================
 
 // GenerateRandomArray 生成随机数组
