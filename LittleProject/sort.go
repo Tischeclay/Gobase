@@ -6,26 +6,6 @@ import (
 	"time"
 )
 
-// ==================== 辅助函数 ====================
-
-// GenerateSortedArray 生成已排序数组
-func GenerateSortedArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = i
-	}
-	return arr
-}
-
-// GenerateReverseArray 生成逆序数组
-func GenerateReverseArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = n - i
-	}
-	return arr
-}
-
 // GenerateDuplicateArray 生成大量重复元素的数组
 func GenerateDuplicateArray(n int) []int {
 	arr := make([]int, n)
