@@ -6,15 +6,6 @@ import (
 	"time"
 )
 
-// GenerateDuplicateArray 生成大量重复元素的数组
-func GenerateDuplicateArray(n int) []int {
-	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		arr[i] = rand.Intn(10) // 只有0-9的重复元素
-	}
-	return arr
-}
-
 // IsSorted 检查数组是否已排序
 func IsSorted(arr []int) bool {
 	for i := 1; i < len(arr); i++ {
