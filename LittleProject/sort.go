@@ -6,13 +6,6 @@ import (
 	"time"
 )
 
-// CopyArray 复制数组
-func CopyArray(arr []int) []int {
-	copyArr := make([]int, len(arr))
-	copy(copyArr, arr)
-	return copyArr
-}
-
 // 打印数组（限制长度）
 func PrintArray(arr []int, limit int) {
 	if len(arr) <= limit {
