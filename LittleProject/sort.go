@@ -6,15 +6,6 @@ import (
 	"time"
 )
 
-// 打印数组（限制长度）
-func PrintArray(arr []int, limit int) {
-	if len(arr) <= limit {
-		fmt.Println(arr)
-	} else {
-		fmt.Printf("%v... (长度: %d)\n", arr[:limit], len(arr))
-	}
-}
-
 // ==================== 性能测试 ====================
 
 // SortBenchmark 排序性能测试
