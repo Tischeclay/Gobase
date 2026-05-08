@@ -6,16 +6,6 @@ import (
 	"time"
 )
 
-// IsSorted 检查数组是否已排序
-func IsSorted(arr []int) bool {
-	for i := 1; i < len(arr); i++ {
-		if arr[i-1] > arr[i] {
-			return false
-		}
-	}
-	return true
-}
-
 // CopyArray 复制数组
 func CopyArray(arr []int) []int {
 	copyArr := make([]int, len(arr))
