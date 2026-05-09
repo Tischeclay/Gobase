@@ -6,23 +6,6 @@ import (
 	"time"
 )
 
-// ==================== 性能测试 ====================
-
-// SortBenchmark 排序性能测试
-func SortBenchmark(name string, sortFunc func([]int), arr []int) time.Duration {
-	testArr := CopyArray(arr)
-	start := time.Now()
-	sortFunc(testArr)
-	duration := time.Since(start)
-
-	if !IsSorted(testArr) {
-		fmt.Printf("❌ %s 排序失败！\n", name)
-		return 0
-	}
-
-	return duration
-}
-
 // RunBenchmarks 运行所有基准测试
 func RunBenchmarks(size int) {
 	fmt.Printf("\n========== 排序性能测试 (数组大小: %d) ==========\n", size)
