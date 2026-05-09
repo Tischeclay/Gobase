@@ -6,50 +6,6 @@ import (
 	"time"
 )
 
-// RunBenchmarks 运行所有基准测试
-func RunBenchmarks(size int) {
-	fmt.Printf("\n========== 排序性能测试 (数组大小: %d) ==========\n", size)
-	fmt.Println()
-
-	// 测试不同场景
-	testCases := []struct {
-		name string
-		gen  func(int) []int
-	}{
-		{"随机数组", GenerateRandomArray},
-		{"已排序数组", GenerateSortedArray},
-		{"逆序数组", GenerateReverseArray},
-		{"重复元素数组", GenerateDuplicateArray},
-	}
-
-	// 要测试的排序算法
-	algorithms := []struct {
-		name string
-		fn   func([]int)
-	}{
-		{"冒泡排序", BubbleSort},
-		{"优化冒泡排序", BubbleSortOptimized},
-		{"快速排序", QuickSort},
-		{"随机基准快排", QuickSortRandom},
-		{"三路快排", QuickSortThreeWay},
-	}
-
-	for _, tc := range testCases {
-		fmt.Printf("📊 %s:\n", tc.name)
-		arr := tc.gen(size)
-
-		for _, algo := range algorithms {
-			duration := SortBenchmark(algo.name, algo.fn, arr)
-			if duration > 0 {
-				fmt.Printf("   %-15s: %v\n", algo.name, duration)
-			}
-		}
-		fmt.Println()
-	}
-}
-
-// ==================== 交互式演示 ====================
-
 // DemoSort 演示排序过程
 func DemoSort() {
 	fmt.Println("========== 排序算法演示 ==========\n")
