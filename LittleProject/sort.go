@@ -6,53 +6,6 @@ import (
 	"time"
 )
 
-// DemoSort 演示排序过程
-func DemoSort() {
-	fmt.Println("========== 排序算法演示 ==========\n")
-
-	// 创建测试数组
-	arr := []int{64, 34, 25, 12, 22, 11, 90, 5, 77, 33}
-
-	fmt.Printf("原始数组: %v\n\n", arr)
-
-	// 冒泡排序
-	arr1 := CopyArray(arr)
-	fmt.Println("1. 冒泡排序:")
-	fmt.Printf("   排序前: %v\n", arr1)
-	BubbleSort(arr1)
-	fmt.Printf("   排序后: %v\n\n", arr1)
-
-	// 快速排序
-	arr2 := CopyArray(arr)
-	fmt.Println("2. 快速排序:")
-	fmt.Printf("   排序前: %v\n", arr2)
-	QuickSort(arr2)
-	fmt.Printf("   排序后: %v\n\n", arr2)
-
-	// 优化冒泡排序
-	arr3 := CopyArray(arr)
-	fmt.Println("3. 优化冒泡排序:")
-	fmt.Printf("   排序前: %v\n", arr3)
-	BubbleSortOptimized(arr3)
-	fmt.Printf("   排序后: %v\n\n", arr3)
-
-	// 随机基准快排
-	arr4 := CopyArray(arr)
-	fmt.Println("4. 随机基准快排:")
-	fmt.Printf("   排序前: %v\n", arr4)
-	QuickSortRandom(arr4)
-	fmt.Printf("   排序后: %v\n\n", arr4)
-
-	// 三路快排
-	arr5 := []int{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5}
-	fmt.Println("5. 三路快排 (处理重复元素):")
-	fmt.Printf("   排序前: %v\n", arr5)
-	QuickSortThreeWay(arr5)
-	fmt.Printf("   排序后: %v\n\n", arr5)
-}
-
-// ==================== 算法详解 ====================
-
 func ExplainAlgorithms() {
 	fmt.Println("========== 算法复杂度分析 ==========\n")
 
