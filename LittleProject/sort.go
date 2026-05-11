@@ -9,16 +9,6 @@ import (
 func ExplainAlgorithms() {
 	fmt.Println("========== 算法复杂度分析 ==========\n")
 
-	fmt.Println("📚 快速排序 (Quick Sort):")
-	fmt.Println("   原理: 分治策略，选择一个基准，将小于基准的放左边，大于的放右边")
-	fmt.Println("   时间复杂度:")
-	fmt.Println("     - 最好: O(n log n)")
-	fmt.Println("     - 平均: O(n log n)")
-	fmt.Println("     - 最坏: O(n²) (已排序或逆序)")
-	fmt.Println("   空间复杂度: O(log n) (递归栈)")
-	fmt.Println("   稳定性: 不稳定")
-	fmt.Println()
-
 	fmt.Println("✨ 优化技巧:")
 	fmt.Println("   1. 随机基准: 避免最坏情况")
 	fmt.Println("   2. 三路快排: 处理大量重复元素")
