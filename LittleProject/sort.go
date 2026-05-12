@@ -6,19 +6,6 @@ import (
 	"time"
 )
 
-// ==================== 并发排序 ====================
-
-// ConcurrentQuickSort 并发快速排序（使用goroutine）
-func ConcurrentQuickSort(arr []int) {
-	if len(arr) <= 1 {
-		return
-	}
-
-	done := make(chan bool)
-	go concurrentQuickSort(arr, 0, len(arr)-1, done)
-	<-done
-}
-
 func concurrentQuickSort(arr []int, low, high int, done chan bool) {
 	defer func() { done <- true }()
 
