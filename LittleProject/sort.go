@@ -6,17 +6,6 @@ import (
 	"time"
 )
 
-func ExplainAlgorithms() {
-	fmt.Println("========== 算法复杂度分析 ==========\n")
-
-	fmt.Println("✨ 优化技巧:")
-	fmt.Println("   1. 随机基准: 避免最坏情况")
-	fmt.Println("   2. 三路快排: 处理大量重复元素")
-	fmt.Println("   3. 小数组使用插入排序")
-	fmt.Println("   4. 尾递归优化")
-	fmt.Println()
-}
-
 // ==================== 并发排序 ====================
 
 // ConcurrentQuickSort 并发快速排序（使用goroutine）
