@@ -7,18 +7,6 @@ import (
 )
 
 func concurrentQuickSort(arr []int, low, high int, done chan bool) {
-	defer func() { done <- true }()
-
-	if low >= high {
-		return
-	}
-
-	// 小数组使用普通快排
-	if high-low < 1000 {
-		quickSortRecursive(arr, low, high)
-		return
-	}
-
 	// 分区
 	pi := partition(arr, low, high)
 
