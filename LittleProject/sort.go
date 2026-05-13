@@ -6,21 +6,6 @@ import (
 	"time"
 )
 
-func concurrentQuickSort(arr []int, low, high int, done chan bool) {
-	// 分区
-	pi := partition(arr, low, high)
-
-	// 并发排序左右部分
-	leftDone := make(chan bool)
-	rightDone := make(chan bool)
-
-	go concurrentQuickSort(arr, low, pi-1, leftDone)
-	go concurrentQuickSort(arr, pi+1, high, rightDone)
-
-	<-leftDone
-	<-rightDone
-}
-
 // ==================== 主函数 ====================
 
 func main() {
