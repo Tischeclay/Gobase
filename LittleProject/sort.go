@@ -2,26 +2,12 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 )
 
 // ==================== 主函数 ====================
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	// 算法说明
-	ExplainAlgorithms()
-
-	// 演示排序过程
-	DemoSort()
-
-	// 小规模性能测试
-	RunBenchmarks(1000)
-
-	// 中等规模性能测试
-	RunBenchmarks(10000)
 
 	// 大规模性能测试（可选）
 	fmt.Print("\n是否进行大规模性能测试 (100000)? (y/n): ")
