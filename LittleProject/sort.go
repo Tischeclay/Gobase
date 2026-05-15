@@ -8,7 +8,7 @@ import (
 // ==================== 主函数 ====================
 
 func main() {
-	
+
 	// 并发排序测试
 	fmt.Println("\n========== 并发排序测试 ==========")
 	size := 50000
@@ -16,8 +16,6 @@ func main() {
 
 	fmt.Printf("并发快速排序 (数组大小: %d)\n", size)
 	start := time.Now()
-	ConcurrentQuickSort(arr)
-	duration := time.Since(start)
 
 	if IsSorted(arr) {
 		fmt.Printf("✅ 排序成功，耗时: %v\n", duration)
