@@ -7,8 +7,7 @@ import (
 // ==================== 主函数 ====================
 
 func main() {
-	
-	if IsSorted(arr) {
+
 		fmt.Printf("✅ 排序成功，耗时: %v\n", duration)
 	} else {
 		fmt.Println("❌ 排序失败")
