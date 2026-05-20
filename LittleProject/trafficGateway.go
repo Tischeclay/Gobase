@@ -815,15 +815,7 @@ func main() {
 		MaxBodySize:   10 * 1024 * 1024,
 		EnableMetrics: true,
 	}
-
-	// 加载配置文件
-	if configFile != "" {
-		data, err := os.ReadFile(configFile)
-		if err == nil {
-			json.Unmarshal(data, &config)
-		}
-	}
-
+	
 	// 创建网关
 	gateway := NewTrafficGateway(config)
 
