@@ -815,30 +815,8 @@ func main() {
 		MaxBodySize:   10 * 1024 * 1024,
 		EnableMetrics: true,
 	}
-	
-	// 创建网关
-	gateway := NewTrafficGateway(config)
 
-	// 加载路由
-	if err := gateway.LoadRoutes(routesFile); err != nil {
-		log.Printf("警告: 加载路由失败: %v", err)
-		// 添加默认路由
-		defaultRoutes := []RouteConfig{
-			{
-				ID:      "default",
-				Path:    "/",
-				Methods: []string{"*"},
-				Upstreams: []UpstreamConfig{
-					{URL: "http://localhost:3000", Weight: 1, Healthy: true, MaxFails: 3, FailTimeout: 30 * time.Second},
-				},
-				LoadBalance: "round_robin",
-				RetryCount:  3,
-				Timeout:     30 * time.Second,
-				RateLimit:   100,
-				Burst:       200,
-				StripPrefix: false,
-			},
-		}
+	// 创建网关
 
 		for _, rc := range defaultRoutes {
 			route, _ := NewRoute(rc)
