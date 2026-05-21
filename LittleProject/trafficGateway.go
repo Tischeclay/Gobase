@@ -815,15 +815,7 @@ func main() {
 		MaxBodySize:   10 * 1024 * 1024,
 		EnableMetrics: true,
 	}
-
-	// 创建网关
-
-		for _, rc := range defaultRoutes {
-			route, _ := NewRoute(rc)
-			gateway.routes[rc.Path] = route
-		}
-	}
-
+	
 	// 启动健康检查
 	go gateway.healthCheck()
 
