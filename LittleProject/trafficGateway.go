@@ -13,11 +13,9 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"os/signal"
 	"strings"
 	"sync"
 	"sync/atomic"
-	"syscall"
 	"time"
 )
 
@@ -818,21 +816,5 @@ func main() {
 
 	// 启动健康检查
 	go gateway.healthCheck()
-
-	// 启动网关
-	if err := gateway.Start(); err != nil {
-		log.Fatal("启动失败:", err)
-	}
-
-	// 等待退出信号
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-	<-sigChan
-
-	// 优雅关闭
-	if err := gateway.Stop(); err != nil {
-		log.Printf("关闭错误: %v", err)
-	}
-
-	log.Println("网关已关闭")
+	
 }
