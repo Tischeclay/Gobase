@@ -803,18 +803,8 @@ func main() {
 	flag.StringVar(&listenAddr, "listen", ":8080", "监听地址")
 	flag.StringVar(&routesFile, "routes", "routes.json", "路由配置文件")
 	flag.Parse()
-
-	// 默认配置
-	config := GatewayConfig{
-		ListenAddr:    listenAddr,
-		ReadTimeout:   30 * time.Second,
-		WriteTimeout:  30 * time.Second,
-		IdleTimeout:   120 * time.Second,
-		MaxBodySize:   10 * 1024 * 1024,
-		EnableMetrics: true,
-	}
-
+	
 	// 启动健康检查
 	go gateway.healthCheck()
-	
+
 }
