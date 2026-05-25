@@ -4,7 +4,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -795,16 +794,5 @@ func (g *TrafficGateway) checkUpstreamHealth(upstream *Upstream) {
 // ==================== 主函数 ====================
 
 func main() {
-	var configFile string
-	var listenAddr string
-	var routesFile string
-
-	flag.StringVar(&configFile, "config", "", "网关配置文件")
-	flag.StringVar(&listenAddr, "listen", ":8080", "监听地址")
-	flag.StringVar(&routesFile, "routes", "routes.json", "路由配置文件")
-	flag.Parse()
-	
-	// 启动健康检查
-	go gateway.healthCheck()
 
 }
