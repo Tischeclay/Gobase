@@ -240,21 +240,5 @@ func main() {
 	for i, pwd := range passwords {
 		fmt.Printf("%2d. %s\n", i+1, pwd)
 	}
-
-	//fmt.Println("=" * 40)
-	fmt.Printf("长度: %d, 熵值: %.1f bits\n", pg.length, entropy)
-
-	// 密码强度评估
-	fmt.Print("强度: ")
-	if entropy < 28 {
-		fmt.Println("非常弱")
-	} else if entropy < 36 {
-		fmt.Println("弱")
-	} else if entropy < 60 {
-		fmt.Println("中等")
-	} else if entropy < 128 {
-		fmt.Println("强")
-	} else {
-		fmt.Println("非常强")
-	}
+	
 }
