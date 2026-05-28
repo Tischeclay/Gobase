@@ -222,23 +222,4 @@ func main() {
 		fmt.Fprintf(os.Stderr, "错误: 最小要求总和超过密码长度\n")
 		os.Exit(1)
 	}
-
-	// 生成密码
-	passwords, err := pg.generateMultiple()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "生成失败: %v\n", err)
-		os.Exit(1)
-	}
-
-	// 计算熵值
-	entropy := pg.estimateEntropy()
-
-	// 输出
-	fmt.Println("生成的密码:")
-	//fmt.Println("=" * 40)
-
-	for i, pwd := range passwords {
-		fmt.Printf("%2d. %s\n", i+1, pwd)
-	}
-	
 }
