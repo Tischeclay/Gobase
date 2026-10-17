@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	pb "grpcdemo/proto" // 替换为你的实际 module 名称
+	pb "grpc-demo/proto" // 替换为你的实际 module 名称
 
 	"google.golang.org/grpc"
 )
