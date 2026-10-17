@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package hello;
+
+// 指定生成的 Go 包路径
+option go_package = "grpc-demo/proto";
+
+// 定义服务
+service Greeter {
+  // 定义一个 RPC 方法
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+// 请求消息
+message HelloRequest {
+  string name = 1;
+}
+
+// 响应消息
+message HelloReply {
+  string message = 1;
+}
