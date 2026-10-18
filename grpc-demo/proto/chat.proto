@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "grpc-demo/proto";
+
+service ChatService {
+  // 双向流 RPC：客户端和服务端均使用 stream 关键字
+  rpc BiStreamChat (stream ChatMessage) returns (stream ChatMessage);
+}
+
+message ChatMessage {
+  string user = 1;
+  string message = 2;
+  int64 timestamp = 3;
+}
