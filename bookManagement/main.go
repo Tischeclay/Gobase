@@ -34,6 +34,23 @@ func filterAvailable(books []Book) []Book {
 	return available
 }
 
+func printBooks(books []Book) {
+	if len(books) == 0 {
+		fmt.Println("没有图书")
+		return
+	}
+
+	for _, book := range books {
+		status := "可借"
+		if book.Borrowed {
+			status = "已借出"
+		}
+
+		fmt.Printf("%s | %s | %s\n",
+			book.ID, book.Title, status)
+	}
+}
+
 func main() {
 	books := []Book{
 		{ID: "B001", Title: "Go语言入门", Borrowed: false},
