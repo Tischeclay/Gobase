@@ -51,6 +51,17 @@ func printBooks(books []Book) {
 	}
 }
 
+func findBook(books []Book, id string) (Book, bool) {
+	for _, book := range books {
+		if book.ID == id {
+			return book, true
+		}
+	}
+
+	// 必须遍历完所有图书，才能确定没有找到。
+	return Book{}, false
+}
+
 func main() {
 	books := []Book{
 		{ID: "B001", Title: "Go语言入门", Borrowed: false},
@@ -58,5 +69,42 @@ func main() {
 		{ID: "B003", Title: "操作系统", Borrowed: false},
 	}
 
-	fmt.Println(books)
+	// 昨天的功能：展示和筛选。
+	fmt.Println("全部图书：")
+	printBooks(books)
+
+	available := filterAvailable(books)
+	fmt.Printf("\n可借图书数量：%d\n", len(available))
+	printBooks(available)
+
+	// 今天增加的功能：按编号查找。
+	fmt.Println("\n查找 B002：")
+	book, found := findBook(books, "B002")
+	if found {
+		fmt.Printf("找到：%s | %s\n", book.ID, book.Title)
+	} else {
+		fmt.Println("没有找到这本书")
+	}
+
+	// 验证查找不存在的编号。
+	fmt.Println("\n查找 B999：")
+	if _, found := findBook(books, "B999"); !found {
+		fmt.Println("没有找到这本书")
+	}
+
+	// 验证从空切片查找。
+	fmt.Println("\n从空列表中查找：")
+	if _, found := findBook([]Book{}, "B001"); !found {
+		fmt.Println("没有找到这本书")
+	}
+
+	// 值复制实验：修改查找结果，不影响原切片里的图书。
+	fmt.Println("\n修改返回的图书副本：")
+	if book, found := findBook(books, "B002"); found {
+		book.Title = "修改后的书名"
+		fmt.Println("副本的书名：", book.Title)
+
+		original, _ := findBook(books, "B002")
+		fmt.Println("原来的书名：", original.Title)
+	}
 }
