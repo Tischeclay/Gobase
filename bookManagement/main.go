@@ -62,6 +62,29 @@ func findBook(books []Book, id string) (Book, bool) {
 	return Book{}, false
 }
 
+// borrowBook 按编号借出图书。
+// 成功返回 nil；不存在或已经借出时返回错误。
+func borrowBook(books []Book, id string) error {
+	for i := range books {
+		// 不是要找的图书，继续检查下一本。
+		if books[i].ID != id {
+			continue
+		}
+
+		// 找到了，但已经借出，不能重复借。
+		if books[i].Borrowed {
+			return fmt.Errorf("图书 %s 已经借出", id)
+		}
+
+		// 通过索引修改原切片中的图书。
+		books[i].Borrowed = true
+		return nil
+	}
+
+	// 遍历结束仍未找到。
+	return fmt.Errorf("图书 %s 不存在", id)
+}
+
 func main() {
 	books := []Book{
 		{ID: "B001", Title: "Go语言入门", Borrowed: false},
