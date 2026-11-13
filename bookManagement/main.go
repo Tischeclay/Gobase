@@ -130,4 +130,23 @@ func main() {
 		original, _ := findBook(books, "B002")
 		fmt.Println("原来的书名：", original.Title)
 	}
+	fmt.Println("\n第一次借出 B001：")
+	if err := borrowBook(books, "B001"); err != nil {
+		fmt.Println("借出失败：", err)
+	} else {
+		fmt.Println("借出成功")
+	}
+
+	// 查看原列表，B001 应该已经变成“已借出”。
+	printBooks(books)
+
+	fmt.Println("\n再次借出 B001：")
+	if err := borrowBook(books, "B001"); err != nil {
+		fmt.Println("借出失败：", err)
+	}
+
+	fmt.Println("\n借出不存在的 B999：")
+	if err := borrowBook(books, "B999"); err != nil {
+		fmt.Println("借出失败：", err)
+	}
 }
