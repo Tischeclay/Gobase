@@ -8,22 +8,6 @@ type Book struct {
 	Borrowed bool
 }
 
-func printBooks(books []Book) {
-	if len(books) > 0 {
-		fmt.Println("没有图书")
-		return
-	}
-
-	for _, book := range books {
-		status := "可借"
-		if book.Borrowed {
-			status = "可借出"
-		}
-
-		fmt.Printf("%s | %s | %s\n", book.ID, book.Title, status)
-	}
-}
-
 func filterAvailable(books []Book) []Book {
 	var available []Book
 	for _, book := range books {
@@ -149,4 +133,5 @@ func main() {
 	if err := borrowBook(books, "B999"); err != nil {
 		fmt.Println("借出失败：", err)
 	}
+
 }
