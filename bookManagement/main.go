@@ -8,6 +8,22 @@ type Book struct {
 	Borrowed bool
 }
 
+type Library struct {
+	books []Book
+}
+
+func NewLibrary(books []Book) *Library {
+	return &Library{books: books}
+}
+
+func (l *Library) Borrow(id string) error {
+	return borrowBook(l.books, id)
+}
+
+func (l *Library) Return(id string) error {
+	return returnBook(l.books, id)
+}
+
 func filterAvailable(books []Book) []Book {
 	var available []Book
 	for _, book := range books {
@@ -92,6 +108,16 @@ func main() {
 		{ID: "B001", Title: "Go语言入门", Borrowed: false},
 		{ID: "B002", Title: "计算机网络", Borrowed: true},
 		{ID: "B003", Title: "操作系统", Borrowed: false},
+	}
+
+	library := NewLibrary(books)
+
+	if err := library.Borrow("B001"); err != nil {
+		fmt.Println("借出失败：", err)
+	}
+
+	if err := library.Return("B001"); err != nil {
+		fmt.Println("归还失败：", err)
 	}
 
 	// 昨天的功能：展示和筛选。
