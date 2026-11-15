@@ -18,6 +18,24 @@ func filterAvailable(books []Book) []Book {
 	return available
 }
 
+// returnBook 按编号归还图书。
+func returnBook(books []Book, id string) error {
+	for i := range books {
+		if books[i].ID != id {
+			continue
+		}
+
+		if !books[i].Borrowed {
+			return fmt.Errorf("图书 %s 当前未借出", id)
+		}
+
+		books[i].Borrowed = false
+		return nil
+	}
+
+	return fmt.Errorf("图书 %s 不存在", id)
+}
+
 func printBooks(books []Book) {
 	if len(books) == 0 {
 		fmt.Println("没有图书")
@@ -132,6 +150,12 @@ func main() {
 	fmt.Println("\n借出不存在的 B999：")
 	if err := borrowBook(books, "B999"); err != nil {
 		fmt.Println("借出失败：", err)
+	}
+
+	if err := returnBook(books, "B001"); err != nil {
+		fmt.Println("归还失败：", err)
+	} else {
+		fmt.Println("归还成功")
 	}
 
 }
