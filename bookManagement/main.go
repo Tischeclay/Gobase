@@ -27,8 +27,20 @@ func (l *Library) Find(id string) (Book, bool) {
 			return book, true
 		}
 	}
-
 	return Book{}, false
+}
+
+// Available 返回所有未借出的图书。
+func (l *Library) Available() []Book {
+	var available []Book
+
+	for _, book := range l.books {
+		if !book.Borrowed {
+			available = append(available, book)
+		}
+	}
+
+	return available
 }
 
 // Borrow 按编号借出图书。
@@ -67,21 +79,8 @@ func (l *Library) Return(id string) error {
 	return fmt.Errorf("图书 %s 不存在", id)
 }
 
-// filterAvailable 返回所有未借出的图书。
-func filterAvailable(books []Book) []Book {
-	var available []Book
-
-	for _, book := range books {
-		if !book.Borrowed {
-			available = append(available, book)
-		}
-	}
-
-	return available
-}
-
-// printBooks 打印图书列表。
-func printBooks(books []Book) {
+// PrintBooks 打印传入的图书列表。
+func (l *Library) PrintBooks(books []Book) {
 	if len(books) == 0 {
 		fmt.Println("没有图书")
 		return
@@ -108,14 +107,14 @@ func main() {
 	library := NewLibrary(books)
 
 	fmt.Println("全部图书：")
-	printBooks(books)
+	library.PrintBooks(books)
 
 	// 筛选并打印可借图书。
-	available := filterAvailable(books)
+	available := library.Available()
 	fmt.Printf("\n可借图书数量：%d\n", len(available))
-	printBooks(available)
+	library.PrintBooks(available)
 
-	// 通过 Library 方法查找图书。
+	// 查找图书。
 	fmt.Println("\n查找 B002：")
 	book, found := library.Find("B002")
 	if found {
@@ -124,40 +123,18 @@ func main() {
 		fmt.Println("没有找到这本书")
 	}
 
-	// 查找不存在的编号。
-	fmt.Println("\n查找 B999：")
-	if _, found := library.Find("B999"); !found {
-		fmt.Println("没有找到这本书")
-	}
-
-	// 演示：Find 返回的是图书副本，改副本不会影响书库中的原图书。
-	fmt.Println("\n修改查找结果的副本：")
-	if book, found := library.Find("B002"); found {
-		book.Title = "修改后的书名"
-		fmt.Println("副本的书名：", book.Title)
-
-		original, _ := library.Find("B002")
-		fmt.Println("书库中的书名：", original.Title)
-	}
-
 	// 借出 B001。
-	fmt.Println("\n第一次借出 B001：")
+	fmt.Println("\n借出 B001：")
 	if err := library.Borrow("B001"); err != nil {
 		fmt.Println("借出失败：", err)
 	} else {
 		fmt.Println("借出成功")
 	}
-	printBooks(books)
+	library.PrintBooks(books)
 
-	// 再次借出同一本书，应返回错误。
+	// 再次借出同一本书，应失败。
 	fmt.Println("\n再次借出 B001：")
 	if err := library.Borrow("B001"); err != nil {
-		fmt.Println("借出失败：", err)
-	}
-
-	// 借出不存在的图书，应返回错误。
-	fmt.Println("\n借出 B999：")
-	if err := library.Borrow("B999"); err != nil {
 		fmt.Println("借出失败：", err)
 	}
 
@@ -168,11 +145,5 @@ func main() {
 	} else {
 		fmt.Println("归还成功")
 	}
-	printBooks(books)
-
-	// 再次归还同一本书，应返回错误。
-	fmt.Println("\n再次归还 B001：")
-	if err := library.Return("B001"); err != nil {
-		fmt.Println("归还失败：", err)
-	}
+	library.PrintBooks(books)
 }
