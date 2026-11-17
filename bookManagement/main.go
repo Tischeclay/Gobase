@@ -96,6 +96,27 @@ func (l *Library) PrintBooks(books []Book) {
 	}
 }
 
+// Add 添加一本图书。
+// 编号和书名不能为空，编号不能与已有图书重复。
+func (l *Library) Add(book Book) error {
+	if book.ID == "" {
+		return fmt.Errorf("图书编号不能为空")
+	}
+	if book.Title == "" {
+		return fmt.Errorf("书名不能为空")
+	}
+
+	if _, found := l.Find(book.ID); found {
+		return fmt.Errorf("图书编号 %s 已存在", book.ID)
+	}
+
+	// 新添加的图书默认是可借状态。
+	book.Borrowed = false
+	l.books = append(l.books, book)
+
+	return nil
+}
+
 func main() {
 	// 创建初始图书数据。
 	books := []Book{
