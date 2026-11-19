@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
 
 // Book 表示一本图书。
 type Book struct {
@@ -16,7 +20,44 @@ type Library struct {
 
 // NewLibrary 创建一个书库。
 func NewLibrary(books []Book) *Library {
+	// 复制输入切片，避免调用方之后修改原切片影响书库
+	bookCopy := make([]Book, len(books))
+	copy(bookCopy, books)
+
 	return &Library{books: books}
+}
+
+// Add 添加一本图书
+// 编号和书名不能为空，编号不能重复，新书默认未借出
+func (l *Library) Add(book Book) error {
+	book.ID = strings.TrimSpace(book.ID)
+	book.Title = strings.TrimSpace(book.Title)
+
+	if book.ID == "" {
+		return fmt.Errorf("图书编号不能为空")
+	}
+	if book.Title == "" {
+		return fmt.Errorf("书名不能为空")
+	}
+	if _, found := l.Find(book.ID); found {
+		return fmt.Errorf("图书编号 %s 已存在", book.ID)
+	}
+
+	// 新书不能由调用方设置为已借出
+	book.Borrowed = false
+	l.books = append(l.books, book)
+
+	return nil
+}
+
+// 返回所有图书，按序号排序
+func (l *Library) List() []Book {
+	books := make([]Book, len(l.books))
+	copy(books, l.books)
+	sort.Slice(books, func(i, j int) bool {
+		return books[i].ID < books[j].ID
+	})
+	return books
 }
 
 // Find 按编号查找图书。
