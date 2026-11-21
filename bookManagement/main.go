@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 )
@@ -13,22 +15,21 @@ type Book struct {
 	Borrowed bool
 }
 
-// Library 保存图书列表。
+// Library 保存图书。
 type Library struct {
 	books []Book
 }
 
-// NewLibrary 创建一个书库。
+// NewLibrary 创建书库，并复制传入的图书切片。
 func NewLibrary(books []Book) *Library {
-	// 复制输入切片，避免调用方之后修改原切片影响书库
 	bookCopy := make([]Book, len(books))
 	copy(bookCopy, books)
 
-	return &Library{books: books}
+	return &Library{books: bookCopy}
 }
 
-// Add 添加一本图书
-// 编号和书名不能为空，编号不能重复，新书默认未借出
+// Add 添加图书。编号和书名不能为空，编号不能重复。
+// 新书默认是未借出状态。
 func (l *Library) Add(book Book) error {
 	book.ID = strings.TrimSpace(book.ID)
 	book.Title = strings.TrimSpace(book.Title)
@@ -43,31 +44,33 @@ func (l *Library) Add(book Book) error {
 		return fmt.Errorf("图书编号 %s 已存在", book.ID)
 	}
 
-	// 新书不能由调用方设置为已借出
 	book.Borrowed = false
 	l.books = append(l.books, book)
-
 	return nil
 }
 
-// 返回所有图书，按序号排序
+// List 返回按编号排序的图书副本。
 func (l *Library) List() []Book {
 	books := make([]Book, len(l.books))
 	copy(books, l.books)
+
 	sort.Slice(books, func(i, j int) bool {
 		return books[i].ID < books[j].ID
 	})
+
 	return books
 }
 
 // Find 按编号查找图书。
-// 找到时返回图书副本和 true；找不到时返回零值图书和 false。
 func (l *Library) Find(id string) (Book, bool) {
+	id = strings.TrimSpace(id)
+
 	for _, book := range l.books {
 		if book.ID == id {
 			return book, true
 		}
 	}
+
 	return Book{}, false
 }
 
@@ -75,7 +78,7 @@ func (l *Library) Find(id string) (Book, bool) {
 func (l *Library) Available() []Book {
 	var available []Book
 
-	for _, book := range l.books {
+	for _, book := range l.List() {
 		if !book.Borrowed {
 			available = append(available, book)
 		}
@@ -84,44 +87,63 @@ func (l *Library) Available() []Book {
 	return available
 }
 
-// Borrow 按编号借出图书。
+// Borrow 借出指定图书。
 func (l *Library) Borrow(id string) error {
-	for i := range l.books {
-		if l.books[i].ID != id {
-			continue
-		}
-
-		if l.books[i].Borrowed {
-			return fmt.Errorf("图书 %s 已经借出", id)
-		}
-
-		l.books[i].Borrowed = true
-		return nil
+	index := l.findIndex(id)
+	if index == -1 {
+		return fmt.Errorf("图书 %s 不存在", id)
+	}
+	if l.books[index].Borrowed {
+		return fmt.Errorf("图书 %s 已经借出", id)
 	}
 
-	return fmt.Errorf("图书 %s 不存在", id)
+	l.books[index].Borrowed = true
+	return nil
 }
 
-// Return 按编号归还图书。
+// Return 归还指定图书。
 func (l *Library) Return(id string) error {
-	for i := range l.books {
-		if l.books[i].ID != id {
-			continue
-		}
-
-		if !l.books[i].Borrowed {
-			return fmt.Errorf("图书 %s 当前未借出", id)
-		}
-
-		l.books[i].Borrowed = false
-		return nil
+	index := l.findIndex(id)
+	if index == -1 {
+		return fmt.Errorf("图书 %s 不存在", id)
+	}
+	if !l.books[index].Borrowed {
+		return fmt.Errorf("图书 %s 当前未借出", id)
 	}
 
-	return fmt.Errorf("图书 %s 不存在", id)
+	l.books[index].Borrowed = false
+	return nil
 }
 
-// PrintBooks 打印传入的图书列表。
-func (l *Library) PrintBooks(books []Book) {
+// Delete 删除未借出的图书。
+func (l *Library) Delete(id string) error {
+	index := l.findIndex(id)
+	if index == -1 {
+		return fmt.Errorf("图书 %s 不存在", id)
+	}
+	if l.books[index].Borrowed {
+		return fmt.Errorf("图书 %s 已借出，不能删除", id)
+	}
+
+	l.books = append(l.books[:index], l.books[index+1:]...)
+	return nil
+}
+
+// findIndex 查找图书在内部切片中的位置，找不到时返回 -1。
+func (l *Library) findIndex(id string) int {
+	id = strings.TrimSpace(id)
+
+	for i := range l.books {
+		if l.books[i].ID == id {
+			return i
+		}
+	}
+
+	return -1
+}
+
+// printBooks 打印图书列表。
+func printBooks(books []Book) {
 	if len(books) == 0 {
 		fmt.Println("没有图书")
 		return
@@ -137,75 +159,133 @@ func (l *Library) PrintBooks(books []Book) {
 	}
 }
 
-// Add 添加一本图书。
-// 编号和书名不能为空，编号不能与已有图书重复。
-func (l *Library) Add(book Book) error {
-	if book.ID == "" {
-		return fmt.Errorf("图书编号不能为空")
-	}
-	if book.Title == "" {
-		return fmt.Errorf("书名不能为空")
+// readInput 显示提示并读取一行输入。
+func readInput(scanner *bufio.Scanner, prompt string) (string, bool) {
+	fmt.Print(prompt)
+
+	if !scanner.Scan() {
+		return "", false
 	}
 
-	if _, found := l.Find(book.ID); found {
-		return fmt.Errorf("图书编号 %s 已存在", book.ID)
-	}
-
-	// 新添加的图书默认是可借状态。
-	book.Borrowed = false
-	l.books = append(l.books, book)
-
-	return nil
+	return strings.TrimSpace(scanner.Text()), true
 }
 
 func main() {
-	// 创建初始图书数据。
-	books := []Book{
+	library := NewLibrary([]Book{
 		{ID: "B001", Title: "Go语言入门"},
 		{ID: "B002", Title: "计算机网络", Borrowed: true},
 		{ID: "B003", Title: "操作系统"},
+	})
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		fmt.Println("\n===== 图书借阅系统 =====")
+		fmt.Println("1. 查看全部图书")
+		fmt.Println("2. 查看可借图书")
+		fmt.Println("3. 查找图书")
+		fmt.Println("4. 添加图书")
+		fmt.Println("5. 借出图书")
+		fmt.Println("6. 归还图书")
+		fmt.Println("7. 删除图书")
+		fmt.Println("0. 退出")
+
+		choice, ok := readInput(scanner, "请选择：")
+		if !ok {
+			fmt.Println("\n输入结束，程序退出。")
+			return
+		}
+
+		switch choice {
+		case "1":
+			printBooks(library.List())
+
+		case "2":
+			printBooks(library.Available())
+
+		case "3":
+			id, ok := readInput(scanner, "请输入图书编号：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			book, found := library.Find(id)
+			if !found {
+				fmt.Println("没有找到这本书")
+				continue
+			}
+
+			printBooks([]Book{book})
+
+		case "4":
+			id, ok := readInput(scanner, "请输入图书编号：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			title, ok := readInput(scanner, "请输入书名：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			err := library.Add(Book{
+				ID:    id,
+				Title: title,
+			})
+			if err != nil {
+				fmt.Println("添加失败：", err)
+			} else {
+				fmt.Println("添加成功")
+			}
+
+		case "5":
+			id, ok := readInput(scanner, "请输入要借出的图书编号：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			if err := library.Borrow(id); err != nil {
+				fmt.Println("借出失败：", err)
+			} else {
+				fmt.Println("借出成功")
+			}
+
+		case "6":
+			id, ok := readInput(scanner, "请输入要归还的图书编号：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			if err := library.Return(id); err != nil {
+				fmt.Println("归还失败：", err)
+			} else {
+				fmt.Println("归还成功")
+			}
+
+		case "7":
+			id, ok := readInput(scanner, "请输入要删除的图书编号：")
+			if !ok {
+				fmt.Println("\n输入结束，程序退出。")
+				return
+			}
+
+			if err := library.Delete(id); err != nil {
+				fmt.Println("删除失败：", err)
+			} else {
+				fmt.Println("删除成功")
+			}
+
+		case "0":
+			fmt.Println("再见！")
+			return
+
+		default:
+			fmt.Println("无效选项，请输入 0～7。")
+		}
 	}
-
-	library := NewLibrary(books)
-
-	fmt.Println("全部图书：")
-	library.PrintBooks(books)
-
-	// 筛选并打印可借图书。
-	available := library.Available()
-	fmt.Printf("\n可借图书数量：%d\n", len(available))
-	library.PrintBooks(available)
-
-	// 查找图书。
-	fmt.Println("\n查找 B002：")
-	book, found := library.Find("B002")
-	if found {
-		fmt.Printf("找到：%s | %s\n", book.ID, book.Title)
-	} else {
-		fmt.Println("没有找到这本书")
-	}
-
-	// 借出 B001。
-	fmt.Println("\n借出 B001：")
-	if err := library.Borrow("B001"); err != nil {
-		fmt.Println("借出失败：", err)
-	} else {
-		fmt.Println("借出成功")
-	}
-	library.PrintBooks(books)
-
-	// 再次借出同一本书，应失败。
-	fmt.Println("\n再次借出 B001：")
-	if err := library.Borrow("B001"); err != nil {
-		fmt.Println("借出失败：", err)
-	}
-
-	// 归还 B001。
-	fmt.Println("\n归还 B001：")
-	if err := library.Return("B001"); err != nil {
-		fmt.Println("归还失败：", err)
-	} else {
-		fmt.Println("归还成功")
-	}
-	library.PrintBooks(books)
 }
